@@ -15,7 +15,7 @@ print_r($_POST);
 $fileDir ="coordinates/";
 $uploadfile = $fileDir . basename($_FILES['fileToUpload']['name']);
 if (move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $uploadfile)) {
-    echo "Success";
+    echo "Successful";
 } else {
     echo "Possible file upload failed";
 }
