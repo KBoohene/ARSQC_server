@@ -11,7 +11,7 @@ class coordinates extends adb{
   //Splits text line
   function splitLine($dataLine){
     $textArray = explode(",",$dataLine);
-    //$this->addCoordinate($textArray[0],$textArray[1],$textArray[2]);
+    $this->addCoordinate($textArray[0],$textArray[1],$textArray[2]);
   }
 
   //Inserts data into database

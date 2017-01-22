@@ -15,9 +15,10 @@ if (move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $uploadfile)) {
     echo "Possible file upload failed";
 }
 */
+*
 include_once("coordinates.php");
 $obj = new coordinates();
 
-$obj->read("features.txt");
+
 
 ?>
