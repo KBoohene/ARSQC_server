@@ -2,7 +2,7 @@
 
 include_once("adb.php");
 
-class coordinates extends{
+class coordinates extends adb{
 
   //Constructor
   function coordinates(){
@@ -10,8 +10,8 @@ class coordinates extends{
 
   //Splits text line
   function splitLine($dataLine){
-    $textArray = explode(",",$datapoints);
-    addCoordinate($textArray[0],$textArray[1],$textArray[2]);
+    $textArray = explode(",",$dataLine);
+    //$this->addCoordinate($textArray[0],$textArray[1],$textArray[2]);
   }
 
   //Inserts data into database
@@ -30,9 +30,9 @@ class coordinates extends{
     if ($tempFile) {
       while (($line = fgets($tempFile)) !== false) {
         // process the line read.
-        splitLine($line);
+        $this->splitLine($line);
       }
-      fclose($handle);
+      fclose($tempFile);
 
       } else {
         // error opening the file.
