@@ -15,6 +15,7 @@
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVy-fqmHDhDqCo3N9MQFknESI5mbzOepU"></script>
     <!-- GMaps Library -->
     <script src="gmaps.js"></script>
+    <script src="calLatLng.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script>
 
@@ -22,9 +23,14 @@
         var mapObj = new GMaps({
           zoom:10,
           el: '#map',
-          lat: 6.6871,
-          lng: -1.622
+          lat: 6.68848,
+          lng: -1.62443
         });
+
+       mapObj.addMarker({
+          lat: 6.68848,
+          lng:-1.62443
+                    });
 
 
       $(document).ready(function(){
@@ -70,11 +76,35 @@
                 }
               }
             });
-
-
-
-
           });
+
+       /*$("#draw").click(function() {
+
+         //Height for boundary
+         var northLngLat1,southLngLat1,westLngLat =[];
+         var northLngLat2,southLngLat2,eastLngLat =[];
+         westLngLat = destVincenty(sourcelat, sourceLng,270,500);
+         northLngLat1 = destVincenty(westLngLat[0],westLngLat[1],0,2500);
+         southLngLat1 = destVincenty(westLngLat[0],westLngLat[1],180,2500);
+
+         eastLngLat= destVincenty(destiLat,destiLng,90,500);
+         northLngLat2 =destVincenty(eastLngLat[0],eastLngLat[1],0,2500);
+         southLngLat2 =destVincenty(eastLngLat[0],eastLngLat[1],180,2500);
+
+         //console.log(southLngLat[0]+" "+southLngLat[1]);
+         path = [[southLngLat1[0],southLngLat1[1]], [northLngLat1[0],northLngLat1[1]],
+                 [northLngLat2[0],northLngLat2[1]],[southLngLat2[0],southLngLat2[1]],
+                 [southLngLat1[0],southLngLat1[1]]];
+
+          mapObj.drawPolyline({
+            path: path,
+            strokeColor: '#131540',
+            strokeOpacity: 0.6,
+            strokeWeight: 6
+          });
+
+       });*/
+
       });
 
     </script>
@@ -85,6 +115,7 @@
       <a id="pos-link" href="#">Get my position</a>
       <br />
       <button id="submit" type="button">Submit</button>
+      <button id="draw" type="button">Draw</button>
     </form>
 
 
