@@ -27,10 +27,10 @@
           lng: -1.62443
         });
 
-       mapObj.addMarker({
+      /* mapObj.addMarker({
           lat: 6.68848,
           lng:-1.62443
-                    });
+                    });*/
 
 
       $(document).ready(function(){
@@ -45,10 +45,10 @@
                 sourceLng=position.coords.longitude;
                 sourcelat=position.coords.latitude;
                 //console.log(sourceLng);
-                mapObj.addMarker({
+               /* mapObj.addMarker({
                       lat: position.coords.latitude,
                       lng: position.coords.longitude
-                    });
+                    });*/
               },
               error: function(error) {
                 alert('Geolocation failed: '+error.message);
@@ -69,14 +69,64 @@
                     destiLat = latlng.lat();
                     destiLng =latlng.lng();
                     //console.log(destiLat);
-                    mapObj.addMarker({
+                    /*mapObj.addMarker({
                       lat: latlng.lat(),
                       lng: latlng.lng()
-                    });
+                    });*/
                 }
               }
             });
           });
+
+
+
+        $("#draw").click(function(){
+          var northbound, westbound=[];
+          var southbound, eastbound=[];
+          var boundaries=[];
+          var distance;
+
+          westbound = destVincenty(sourcelat,sourceLng,270,1000);
+          northbound = destVincenty(westbound[0],westbound[1],0,1000);
+
+          eastbound = destVincenty(destiLat,destiLng,90,1000);
+          southbound = destVincenty(eastbound[0],eastbound[1],180,1000);
+
+          var nwlatlng = new google.maps.LatLng(northbound[0],northbound[1]);
+          var selatlng = new google.maps.LatLng(southbound[0],southbound[1]);
+          boundaries.push(nwlatlng);
+          boundaries.push(selatlng);
+
+          mapObj.fitLatLngBounds(boundaries);
+
+          //distance=distVincenty(northbound[0],northbound[1],southbound[0],southbound[1]);
+
+          //south West
+          mapObj.addMarker({
+                      lat: northbound[0],
+                      lng: northbound[1]
+                    });
+
+          //North East
+          mapObj.addMarker({
+                      lat: southbound[0],
+                      lng: southbound[1]
+                    });
+
+          //South west
+           mapObj.addMarker({
+                      lat: southbound[0],
+                      lng: northbound[1]
+                    });
+          //North east
+          mapObj.addMarker({
+            lat:northbound[0],
+            lng:southbound[1]
+          });
+
+        });
+
+
 
        /*$("#draw").click(function() {
 
