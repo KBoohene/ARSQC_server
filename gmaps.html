@@ -16,6 +16,7 @@
     <!-- GMaps Library -->
     <script src="gmaps.js"></script>
     <script src="calLatLng.js"></script>
+    <script src="calDistance.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
     <script>
 
@@ -38,17 +39,19 @@
         var sourceLng, sourcelat;
         var destiLng, destiLat;
         $("#pos-link").click(function(event) {
-
+            mapObj.removeMarkers();
             GMaps.geolocate({
               success: function(position) {
                 mapObj.setCenter(position.coords.latitude, position.coords.longitude);
                 sourceLng=position.coords.longitude;
                 sourcelat=position.coords.latitude;
-                //console.log(sourceLng);
-               /* mapObj.addMarker({
-                      lat: position.coords.latitude,
-                      lng: position.coords.longitude
-                    });*/
+
+               mapObj.addMarker({
+                   lat: position.coords.latitude,
+                   lng: position.coords.longitude,
+                   title: 'GPS Location',
+                   icon: {path: google.maps.SymbolPath.CIRCLE, scale: 5}
+                    });
               },
               error: function(error) {
                 alert('Geolocation failed: '+error.message);
@@ -69,10 +72,12 @@
                     destiLat = latlng.lat();
                     destiLng =latlng.lng();
                     //console.log(destiLat);
-                    /*mapObj.addMarker({
+                    mapObj.addMarker({
                       lat: latlng.lat(),
-                      lng: latlng.lng()
-                    });*/
+                      lng: latlng.lng(),
+                      title: 'Destination',
+                      icon: {path: google.maps.SymbolPath.CIRCLE, scale: 5}
+                    });
                 }
               }
             });
@@ -81,49 +86,125 @@
 
 
         $("#draw").click(function(){
-          var northbound, westbound=[];
-          var southbound, eastbound=[];
-          var boundaries=[];
+          var sourceVertical, sourceHorizontal=[];
+          var destiVertical, destiHorizontal=[];
+          var NW = new Array(2);
+          var NE = new Array(2);
+          var SW = new Array(2);
+          var SE = new Array(2);
           var distance;
+          var boundaries=[];
+          mapObj.removePolygons();
 
-          westbound = destVincenty(sourcelat,sourceLng,270,1000);
-          northbound = destVincenty(westbound[0],westbound[1],0,1000);
 
-          eastbound = destVincenty(destiLat,destiLng,90,1000);
-          southbound = destVincenty(eastbound[0],eastbound[1],180,1000);
+          distance = distVincenty(sourcelat,sourceLng,destiLat,destiLng);
+          distance= (distance*0.2);
 
-          var nwlatlng = new google.maps.LatLng(northbound[0],northbound[1]);
-          var selatlng = new google.maps.LatLng(southbound[0],southbound[1]);
+          if((sourcelat>destiLat)&&(sourceLng<destiLng)){
+            sourceHorizontal = destVincenty(sourcelat,sourceLng,270,distance);
+            sourceVertical = destVincenty(sourceHorizontal[0],sourceHorizontal[1],0,distance);
+
+            destiHorizontal = destVincenty(destiLat,destiLng,90,distance);
+            destiVertical = destVincenty(destiHorizontal[0],destiHorizontal[1],180,distance);
+
+            //console.log(sourceVertical[0]);
+            NW = sourceVertical;
+            SE = destiVertical;
+            NE[0] = sourceVertical[0];
+            NE[1] = destiVertical[1];
+            SW[0] = destiVertical[0];
+            SW[1] = sourceVertical[1];
+
+
+          }
+          else if((sourcelat<destiLat)&&(sourceLng<destiLng)){
+            sourceHorizontal = destVincenty(sourcelat,sourceLng,270,distance);
+            sourceVertical = destVincenty(sourceHorizontal[0],sourceHorizontal[1],180,distance);
+
+            destiHorizontal = destVincenty(destiLat,destiLng,90,distance);
+            destiVertical = destVincenty(destiHorizontal[0],destiHorizontal[1],0,distance);
+
+            SW = sourceVertical;
+            NE = destiVertical;
+            NW[0] = destiVertical[0];
+            NW[1] = sourceVertical[1];
+            SE[0] = sourceVertical[0];
+            SE[1] = destiVertical[1];
+
+          }
+          else if((sourcelat<destiLat)&&(sourceLng>destiLng)){
+            sourceHorizontal = destVincenty(sourcelat,sourceLng,90,distance);
+            sourceVertical = destVincenty(sourceHorizontal[0],sourceHorizontal[1],180,distance);
+
+            destiHorizontal = destVincenty(destiLat,destiLng,270,distance);
+            destiVertical = destVincenty(destiHorizontal[0],destiHorizontal[1],0,distance);
+
+            SE = sourceVertical;
+            NW = destiVertical;
+            NE[0] = destiVertical[0];
+            NE[1] = sourceVertical[1];
+            SW[0] = sourceVertical[0];
+            SW[1] = destiVertical[1];
+          }
+          else if((sourcelat>destiLat)&&(sourceLng>destiLng)){
+            sourceHorizontal = destVincenty(sourcelat,sourceLng,90,distance);
+            sourceVertical = destVincenty(sourceHorizontal[0],sourceHorizontal[1],0,distance);
+
+            destiHorizontal = destVincenty(destiLat,destiLng,270,distance);
+            destiVertical = destVincenty(destiHorizontal[0],destiHorizontal[1],180,distance);
+
+            SW = destiVertical;
+            NE = sourceVertical;
+            NW[0] = sourceVertical[0];
+            NW[1] = destiVertical[1];
+            SE[0] = destiVertical[0];
+            SE[1] = sourceVertical[1];
+          }
+
+          /*//Northwest Marker
+          mapObj.addMarker({
+            lat: NW[0],
+            lng: NW[1]
+          });
+
+          //North East Marker
+          mapObj.addMarker({
+              lat: NE[0],
+              lng: NE[1]
+            });
+
+          //South West Marker
+           mapObj.addMarker({
+              lat: SW[0],
+              lng: SW[1]
+            });
+
+          //South East Marker
+          mapObj.addMarker({
+            lat:SE[0],
+            lng:SE[1]
+          });
+          */
+          var path = [[NW[0],NW[1]],
+                      [NE[0],NE[1]],
+                      [SE[0],SE[1]],
+                      [SW[0],SW[1]]];
+
+            polygon = mapObj.drawPolygon({
+              paths: path, // pre-defined polygon shape
+              strokeColor: '#BBD8E9',
+              strokeOpacity: 1,
+              strokeWeight: 3,
+              fillColor: '#BBD8E9',
+              fillOpacity: 0.6
+            });
+
+          var nwlatlng = new google.maps.LatLng(sourceVertical[0],sourceVertical[1]);
+          var selatlng = new google.maps.LatLng(destiVertical[0],destiVertical[1]);
           boundaries.push(nwlatlng);
           boundaries.push(selatlng);
 
           mapObj.fitLatLngBounds(boundaries);
-
-          //distance=distVincenty(northbound[0],northbound[1],southbound[0],southbound[1]);
-
-          //south West
-          mapObj.addMarker({
-                      lat: northbound[0],
-                      lng: northbound[1]
-                    });
-
-          //North East
-          mapObj.addMarker({
-                      lat: southbound[0],
-                      lng: southbound[1]
-                    });
-
-          //South west
-           mapObj.addMarker({
-                      lat: southbound[0],
-                      lng: northbound[1]
-                    });
-          //North east
-          mapObj.addMarker({
-            lat:northbound[0],
-            lng:southbound[1]
-          });
-
         });
 
 
