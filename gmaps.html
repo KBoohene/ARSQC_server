@@ -71,6 +71,7 @@
                    mapObj.setCenter(latlng.lat(), latlng.lng());
                     destiLat = latlng.lat();
                     destiLng =latlng.lng();
+                    drawBoundary(latlng.lat(),latlng.lng());
                     //console.log(destiLat);
                     mapObj.addMarker({
                       lat: latlng.lat(),
@@ -81,11 +82,10 @@
                 }
               }
             });
+
           });
 
-
-
-        $("#draw").click(function(){
+      function drawBoundary(destiLat,destiLng){
           var sourceVertical, sourceHorizontal=[];
           var destiVertical, destiHorizontal=[];
           var NW = new Array(2);
@@ -96,9 +96,9 @@
           var boundaries=[];
           mapObj.removePolygons();
 
-
           distance = distVincenty(sourcelat,sourceLng,destiLat,destiLng);
           distance= (distance*0.2);
+          console.log(destiLat);
 
           if((sourcelat>destiLat)&&(sourceLng<destiLng)){
             sourceHorizontal = destVincenty(sourcelat,sourceLng,270,distance);
@@ -107,7 +107,7 @@
             destiHorizontal = destVincenty(destiLat,destiLng,90,distance);
             destiVertical = destVincenty(destiHorizontal[0],destiHorizontal[1],180,distance);
 
-            //console.log(sourceVertical[0]);
+
             NW = sourceVertical;
             SE = destiVertical;
             NE[0] = sourceVertical[0];
@@ -160,6 +160,8 @@
             SE[0] = destiVertical[0];
             SE[1] = sourceVertical[1];
           }
+        //console.log(destiHorizontal[0]+" "+destiVertical[1]);
+        //console.log(sourceHorizontal[0]+" "+sourceVertical[1]);
 
           /*//Northwest Marker
           mapObj.addMarker({
@@ -205,36 +207,7 @@
           boundaries.push(selatlng);
 
           mapObj.fitLatLngBounds(boundaries);
-        });
-
-
-
-       /*$("#draw").click(function() {
-
-         //Height for boundary
-         var northLngLat1,southLngLat1,westLngLat =[];
-         var northLngLat2,southLngLat2,eastLngLat =[];
-         westLngLat = destVincenty(sourcelat, sourceLng,270,500);
-         northLngLat1 = destVincenty(westLngLat[0],westLngLat[1],0,2500);
-         southLngLat1 = destVincenty(westLngLat[0],westLngLat[1],180,2500);
-
-         eastLngLat= destVincenty(destiLat,destiLng,90,500);
-         northLngLat2 =destVincenty(eastLngLat[0],eastLngLat[1],0,2500);
-         southLngLat2 =destVincenty(eastLngLat[0],eastLngLat[1],180,2500);
-
-         //console.log(southLngLat[0]+" "+southLngLat[1]);
-         path = [[southLngLat1[0],southLngLat1[1]], [northLngLat1[0],northLngLat1[1]],
-                 [northLngLat2[0],northLngLat2[1]],[southLngLat2[0],southLngLat2[1]],
-                 [southLngLat1[0],southLngLat1[1]]];
-
-          mapObj.drawPolyline({
-            path: path,
-            strokeColor: '#131540',
-            strokeOpacity: 0.6,
-            strokeWeight: 6
-          });
-
-       });*/
+        }
 
       });
 
