@@ -22,36 +22,39 @@
 
         /* Map Object */
         var mapObj = new GMaps({
-          zoom:10,
+          zoom:7,
           el: '#map',
           lat: 6.68848,
           lng: -1.62443
         });
-
-      /* mapObj.addMarker({
-          lat: 6.68848,
-          lng:-1.62443
-                    });*/
 
 
       $(document).ready(function(){
 
         var sourceLng, sourcelat;
         var destiLng, destiLat;
+        var markers =[];
+        var markerCounter;
+
         $("#pos-link").click(function(event) {
             mapObj.removeMarkers();
             GMaps.geolocate({
               success: function(position) {
-                mapObj.setCenter(position.coords.latitude, position.coords.longitude);
+                //mapObj.setCenter(position.coords.latitude, position.coords.longitude);
                 sourceLng=position.coords.longitude;
                 sourcelat=position.coords.latitude;
 
-               mapObj.addMarker({
+               var Source =mapObj.createMarker({
                    lat: position.coords.latitude,
                    lng: position.coords.longitude,
                    title: 'GPS Location',
                    icon: {path: google.maps.SymbolPath.CIRCLE, scale: 5}
                     });
+
+                markers.push(Source);
+                mapObj.addMarker(Source);
+                mapObj.setZoom(12);
+
               },
               error: function(error) {
                 alert('Geolocation failed: '+error.message);
@@ -73,12 +76,15 @@
                     destiLng =latlng.lng();
                     drawBoundary(latlng.lat(),latlng.lng());
                     //console.log(destiLat);
-                    mapObj.addMarker({
+                   var destination= mapObj.createMarker({
                       lat: latlng.lat(),
                       lng: latlng.lng(),
                       title: 'Destination',
                       icon: {path: google.maps.SymbolPath.CIRCLE, scale: 5}
                     });
+                  markers.push(destination);
+                  mapObj.addMarker(destination);
+                  mapObj.setZoom(12);
                 }
               }
             });
@@ -95,10 +101,11 @@
           var distance;
           var boundaries=[];
           mapObj.removePolygons();
+          //markers[1].setMap(null);
 
           distance = distVincenty(sourcelat,sourceLng,destiLat,destiLng);
-          distance= (distance*0.2);
-          console.log(destiLat);
+          distance= (distance*0.3);
+          //console.log(destiLat);
 
           if((sourcelat>destiLat)&&(sourceLng<destiLng)){
             sourceHorizontal = destVincenty(sourcelat,sourceLng,270,distance);
@@ -106,7 +113,6 @@
 
             destiHorizontal = destVincenty(destiLat,destiLng,90,distance);
             destiVertical = destVincenty(destiHorizontal[0],destiHorizontal[1],180,distance);
-
 
             NW = sourceVertical;
             SE = destiVertical;
@@ -219,7 +225,7 @@
       <a id="pos-link" href="#">Get my position</a>
       <br />
       <button id="submit" type="button">Submit</button>
-      <button id="draw" type="button">Draw</button>
+      <!--<button id="draw" type="button">Draw</button>-->
     </form>
 
 
