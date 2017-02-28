@@ -199,4 +199,4 @@ RBTree.prototype.dump = function(silent) {
   return res;
 };
 
-module.exports = RBTree;
+//module.exports = RBTree;

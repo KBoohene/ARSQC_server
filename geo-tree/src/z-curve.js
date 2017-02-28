@@ -1,10 +1,10 @@
 // z-curve implementation mapping 2D coordinates into 1D (single index) scalar
 //
 
-module.exports = {
+//module.exports = {
   // (X,Y) --> idx
   // make sure the resulting float is 53 bits max to maintain the precision
-  xy2d: function(x, y) {
+  var xy2d= function(x, y) {
     var bit = 1, max = Math.max(x,y), res = 0.0;
     while (bit <= max) { bit <<= 1; }
     bit >>= 1;
@@ -17,4 +17,4 @@ module.exports = {
     }
     return res;
   }
-};
+//};

@@ -10,8 +10,8 @@
 // ---
 // gt.dump();               ... text dump of the tree (for debugging / testing // purposes)
 
-var RBTree = require('./red-black');
-var curve = require('./z-curve');
+//var RBTree = require('./red-black');
+//var curve = require('./z-curve');
 
 // --- helper functions ---
 
@@ -96,7 +96,7 @@ GeoTree.prototype.insert = function(arg1, arg2, arg3) {
   var iLat = Math.round((lat + 90.0) * 100000);  // 5 decimal digits
   // lng: -180 .. +180
   var iLng = Math.round((lng + 180.0) * 100000);
-  var idx = curve.xy2d(iLat, iLng);
+  var idx = xy2d(iLat, iLng);
   this.tree.insert(idx, { idx: idx, lat: lat, lng: lng, data: data} );
 };
 
@@ -130,9 +130,9 @@ GeoTree.prototype.find = function(arg1, arg2, arg3) {
       minLng = Math.max(arg1.lng - radius, -180.0);
       maxLng = Math.min(arg1.lng + radius,  180.0);
     }
-    minIdx = curve.xy2d(Math.round((minLat + 90.0) * 100000),
+    minIdx = xy2d(Math.round((minLat + 90.0) * 100000),
                         Math.round((minLng + 180.0) * 100000));
-    maxIdx = curve.xy2d(Math.round((maxLat + 90.0) * 100000),
+    maxIdx = xy2d(Math.round((maxLat + 90.0) * 100000),
                         Math.round((maxLng + 180.0) * 100000));
   }
   var candidates = this.tree.find(minIdx, maxIdx);
@@ -171,4 +171,4 @@ GeoTree.prototype.dump = function(silent) {
   return this.tree.dump(silent);
 };
 
-module.exports = GeoTree;
+//module.exports = GeoTree;
