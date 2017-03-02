@@ -3,9 +3,9 @@
     <title>
       Quadtree Test
     </title>
-    <script src="/geo-tree/src/z-curve.js" type="text/javascript"></script>
-    <script src="/geo-tree/src/red-black.js" type="text/javascript"></script>
-    <script src="/geo-tree/src/geo-tree.js" type="text/javascript"></script>
+    <script src="/geo-tree/z-curve.js" type="text/javascript"></script>
+    <script src="/geo-tree/red-black.js" type="text/javascript"></script>
+    <script src="/geo-tree/geo-tree.js" type="text/javascript"></script>
   </head>
   <body>
     <script>
@@ -19,8 +19,11 @@
         {lat: 50.05967, lng: 14.46562, data: 'Prague, Czech Republic'}
       ]);
 
-      var output = set.find({lat: -30, lng: -0.5}, {lat: 55, lng: 20});
-      console.log(output);
+      set.dump();
+      //set.insert(52.50754, 13.42614, 'Berlin, Germany');
+
+      /*var output = set.find({lat: -30, lng: -0.5}, {lat: 55, lng: 20});
+      console.log(output);*/
     </script>
   </body>
 </html>

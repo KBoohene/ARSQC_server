@@ -1,3 +1,9 @@
+/**
+ *@author: Salsita Software
+ * September 4, 2014
+ *Java Script implementation of a red-black tree
+ *Source: https://github.com/salsita/geo-tree/blob/master/src/red-black.js
+**/
 // red-black tree implementation
 //
 // public API of RBTree:

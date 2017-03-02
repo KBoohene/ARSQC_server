@@ -1,6 +1,5 @@
 <?php
 
-
 include_once("coordinates.php");
 $obj = new coordinates();
 

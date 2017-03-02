@@ -1,3 +1,10 @@
+/**
+ *@author: Salsita Software
+ * October 12, 2014
+ * Implementation of a datastructure that allows the storage and
+ * querying of GPS coordinates.
+ * Source: https://github.com/salsita/geo-tree/blob/master/src/geo-tree.js
+**/
 // geo-tree implementation (using red-black tree and z-curve)
 //
 // public API of GeoTree:
