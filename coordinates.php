@@ -39,6 +39,10 @@ class coordinates extends adb{
       }
   }
 
+  function fetchAllData(){
+    $strQuery="";
+    return $this->query($strQuery);
+  }
 }
 
 ?>
