@@ -23,12 +23,13 @@
       $count=0;
       while($coordData->fetch()){
 
-        $GPSdata[$count][0]=;
-        $GPSdata[$count][1]=;
-        $GPSdata[$count][2]=;
-        $GPSdata[$count][3]=;
-        $GPSdata[$count][4]=;
-      }
+        $GPSdata[$count][0]=coordData['grade'];
+        $GPSdata[$count][1]=coordData['Longitude'];
+        $GPSdata[$count][2]=coordData['Latitude'];
+        $GPSdata[$count][3]=coordData['nxtLongitude'];
+        $GPSdata[$count][4]=coordData['nxtLatitude'];
+        $GPSdata[$count][5]=coordData['routeId'];
+
       */
     ?>
     <script>
@@ -37,8 +38,8 @@
       var tempArray =[];
       /*var GPSpoints = <?php //echo json_encode($GPSdata); ?>;
       for(int i;i<=GPSpoints.length;i++){
-        GradeData =[NxtLng:GPSpoints[i][3], NxtLat:GPSpoints[i][4], Grade:GPSpoints[i][2]];
-        binaryTreeGPS=[lat:GPSpoints[i][0], lng:GPSpoints[i][1], data:GradeData];
+        GradeData =[NxtLng:GPSpoints[i][3], NxtLat:GPSpoints[i][4], Grade:GPSpoints[i][0]];
+        binaryTreeGPS=[lat:GPSpoints[i][1], lng:GPSpoints[i][2], data:GradeData];
         tempArray.push(binarryTreeGPS);
       }
       set.insert(tempArray);
