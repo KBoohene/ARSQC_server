@@ -40,16 +40,12 @@
       var GPSpoints = <?php echo json_encode($GPSdata); ?>;
 
       for (var i=0;i<GPSpoints.length;i++){
-        //console.log(GPSpoints[i][2]);
         GradeData={NxtLng:GPSpoints[i][3],NxtLat:GPSpoints[i][4],grade:GPSpoints[i][0]};
         binaryTreeGPS={lat: GPSpoints[i][2],lng: GPSpoints[i][1],data: GradeData};
-        tempArray.push(binaryTreeGPS);
+        console.log(binaryTreeGPS);
+        set.insert(binaryTreeGPS);
       }
 
-      set.insert(tempArray);
-
-      var output = set.find({lat: GPSpoints[0][2], lng: GPSpoints[0][1]});
-      console.log(output);
 
       /*set.insert([
         {lat: 52.50754, lng: 13.42614, data: 'Berlin, Germany'},
@@ -58,7 +54,7 @@
         {lat: 50.05967, lng: 14.46562, data: 'Prague, Czech Republic'}
       ]);*/
 
-      //set.dump();
+      set.dump();
       /*window.onbeforeunload = updateDB;
       function updateDB(){
 
