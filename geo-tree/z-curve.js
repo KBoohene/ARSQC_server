@@ -22,7 +22,6 @@
       if (y & bit) { res += 1.0; }
       bit >>= 1;
     }
-    console.log(res);
     return res;
   }
 //};
