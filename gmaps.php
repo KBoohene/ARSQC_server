@@ -1,5 +1,10 @@
 <!doctype html>
 <html>
+  <!--
+  - @author:Kwabena Boohene
+  - @date:02/2017
+  - Displays road quality data
+  -->
   <head>
     <!--Scripts needed for geotree datastructure-->
     <script src="geo-tree/z-curve.js" type="text/javascript"></script>
@@ -60,7 +65,7 @@
         //console.log(binaryTreeGPS);
         set.insert(binaryTreeGPS);
       }
-      set.dump();
+      //set.dump();
     </script>
 
     <!--This section deals with all aspects of the map interface-->
