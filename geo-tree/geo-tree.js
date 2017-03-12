@@ -144,7 +144,7 @@ GeoTree.prototype.find = function(arg1, arg2, arg3) {
   }
   var candidates = this.tree.find(minIdx, maxIdx);
   var i, item, lat, lng, res = [];
-  if (all) { for (i = 0; i < candidates.length; i++) { res.push(candidates[i].data); } }
+  if (all) { for (i = 0; i < candidates.length; i++) { res.push(candidates[i]); } }
   else {
     if (undefined === radius) {
       // rectangle
@@ -153,14 +153,14 @@ GeoTree.prototype.find = function(arg1, arg2, arg3) {
         lat = item.lat;
         lng = item.lng;
         if (minLat <= lat && lat <= maxLat && minLng <= lng && lng <= maxLng) {
-          res.push(item.data);
+          res.push(item);
         }
       }
     } else {
       // circle
       for (i = 0; i < candidates.length; i++) {
         item = candidates[i];
-        if (validate(item)) { res.push(item.data); }
+        if (validate(item)) { res.push(item); }
       }
     }
   }
