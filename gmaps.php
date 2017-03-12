@@ -65,7 +65,7 @@
         //console.log(binaryTreeGPS);
         set.insert(binaryTreeGPS);
       }
-      //set.dump();
+
     </script>
 
     <!--This section deals with all aspects of the map interface-->
@@ -91,7 +91,7 @@
             mapObj.removeMarkers();
             GMaps.geolocate({
               success: function(position) {
-                //mapObj.setCenter(position.coords.latitude, position.coords.longitude);
+                mapObj.setCenter(position.coords.latitude, position.coords.longitude);
                 sourceLng=position.coords.longitude;
                 sourcelat=position.coords.latitude;
 
@@ -224,6 +224,8 @@
                       [NE[0],NE[1]],
                       [SE[0],SE[1]],
                       [SW[0],SW[1]]];
+        //console.log([NW[0],NW[1]],[SE[0],SE[1]]);
+        console.log(set.find([NW[0],NW[1]],[SE[0],SE[1]]));
 
             polygon = mapObj.drawPolygon({
               paths: path,
