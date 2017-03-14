@@ -143,7 +143,9 @@
 
           });
 
-      //Draws rectangular boundary around two points
+      /*Draws rectangular boundary around the user's
+      * GPS location and the destination's GPS
+      */
       function drawBoundary(destiLat,destiLng){
           var sourceVertical, sourceHorizontal=[];
           var destiVertical, destiHorizontal=[];
@@ -224,12 +226,7 @@
                       [NE[0],NE[1]],
                       [SE[0],SE[1]],
                       [SW[0],SW[1]]];
-        console.log([NW[0],NW[1]],[SE[0],SE[1]]);
-
-        console.log(set.find({lat:NW[0],lng:NW[1]},
-                             {lat:SE[0],lng:SE[1]} ));
-
-        set.dump();
+        //console.log([NW[0],NW[1]],[SE[0],SE[1]]);
 
             polygon = mapObj.drawPolygon({
               paths: path,
@@ -240,12 +237,39 @@
               fillOpacity: 0.6
             });
 
+        /*This inserts the boundary points based on user input
+        into Geotree datastructure*/
+        var requiredPoints = [];
+        requiredPoints =set.find({lat:NW[0],lng:NW[1]},
+                             {lat:SE[0],lng:SE[1]});
+        console.log(requiredPoints);
+
+        drawGradeLines(requiredPoints);
+
           var nwlatlng = new google.maps.LatLng(sourceVertical[0],sourceVertical[1]);
           var selatlng = new google.maps.LatLng(destiVertical[0],destiVertical[1]);
           boundaries.push(nwlatlng);
           boundaries.push(selatlng);
 
+          //Fits map to GPS boundaries
           mapObj.fitLatLngBounds(boundaries);
+        }
+
+        /*
+        * Displays the classified data on a map interface
+        */
+        function drawGradeLines(requiredPoints){
+          var lat, lng, nxtlat, nxtlng, grade, roadId;
+
+          for (var i =0;i<requiredPoints.length;i++){
+            lat = requiredPoints[i].lat;
+            lng = requiredPoints[i].lng;
+            nxtlat =requiredPoints[i].data.NxtLat;
+            nxtlng =requiredPoints[i].data.NxtLng;
+            grade=requiredPoints[i].data.grade;
+            roadId=requiredPoints[i].data.roadId;
+            //console.log("lat:"+lat+" lng:"+lng+" nxtlat:"+nxtlat+" nxtlng:"+nxtlng+" grade:"+grade);
+          }
         }
 
       });
