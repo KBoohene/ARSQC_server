@@ -224,8 +224,12 @@
                       [NE[0],NE[1]],
                       [SE[0],SE[1]],
                       [SW[0],SW[1]]];
-        //console.log([NW[0],NW[1]],[SE[0],SE[1]]);
-        console.log(set.find([NW[0],NW[1]],[SE[0],SE[1]]));
+        console.log([NW[0],NW[1]],[SE[0],SE[1]]);
+
+        console.log(set.find({lat:NW[0],lng:NW[1]},
+                             {lat:SE[0],lng:SE[1]} ));
+
+        set.dump();
 
             polygon = mapObj.drawPolygon({
               paths: path,
@@ -249,7 +253,7 @@
     </script>
 
     <!--Form to take in user search data-->
-    <form id="draw-route" name="draw-route" action="#" method="get">
+    <form id="draw-route" name="draw-route" action="" method="get">
       <label for="to">To:</label>
       <input type="text" id="to" name="to" required="required" placeholder="Another address" size="30" />
       <a id="pos-link" href="#">Get my position</a>
