@@ -93,7 +93,7 @@ class coordinates extends adb{
   * @return all the gps data stored in the database
   */
   function fetchAllData(){
-    $strQuery="Select grade, Longitude, Latitude, nxtLongitude, nxtLatitude, routeId from datapoints";
+    $strQuery="Select grade, Longitude, Latitude, nxtLongitude, nxtLatitude, routeId, position from datapoints";
     return $this->query($strQuery);
   }
 }

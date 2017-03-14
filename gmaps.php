@@ -47,6 +47,7 @@
       $GPSdata[$count][3]=$coordData['nxtLongitude'];
       $GPSdata[$count][4]=$coordData['nxtLatitude'];
       $GPSdata[$count][5]=$coordData['routeId'];
+      $GPSdata[$count][6]=$coordData['position'];
       $count++;
     }
 
@@ -60,8 +61,9 @@
 
       //Dumps data into geotree datastructure
       for (var i=0;i<GPSpoints.length;i++){
-        GradeData={NxtLng:parseFloat(GPSpoints[i][3]),NxtLat:parseFloat(GPSpoints[i][4]),grade:GPSpoints[i][0]};
-        binaryTreeGPS={lat: parseFloat(GPSpoints[i][2]),lng: parseFloat(GPSpoints[i][1]),data: GradeData};
+        GradeData={NxtLng:parseFloat(GPSpoints[i][3]),NxtLat:parseFloat(GPSpoints[i][4]),
+                   grade:GPSpoints[i][0], position:parseInt(GPSpoints[i][6]), routeId:parseInt(GPSpoints[i][5])};
+        binaryTreeGPS={lat:parseFloat(GPSpoints[i][2]),lng:parseFloat(GPSpoints[i][1]),data: GradeData};
         //console.log(binaryTreeGPS);
         set.insert(binaryTreeGPS);
       }
@@ -242,7 +244,8 @@
         var requiredPoints = [];
         requiredPoints =set.find({lat:NW[0],lng:NW[1]},
                              {lat:SE[0],lng:SE[1]});
-        console.log(requiredPoints);
+        //console.log(requiredPoints);
+        //set.dump();
 
         drawGradeLines(requiredPoints);
 
@@ -260,17 +263,41 @@
         */
         function drawGradeLines(requiredPoints){
           var lat, lng, nxtlat, nxtlng, grade, roadId;
+          var output, startpoint=[], path=[];
+          var count =1;
 
-          for (var i =0;i<requiredPoints.length;i++){
-            lat = requiredPoints[i].lat;
+          startpoint=requiredPoints.find(getStartpoint);
+          console.log(startpoint);
+          path.push(startpoint);
+          nxtlat=startpoint.data.NxtLat;
+
+          while (count<requiredPoints.length){
+            output = requiredPoints.find(getNextData);
+            path.push(output);
+            console.log(output);
+            nxtlat=output.data.NxtLat;
+            count++;
+
+            /*lat = requiredPoints[i].lat;
             lng = requiredPoints[i].lng;
             nxtlat =requiredPoints[i].data.NxtLat;
             nxtlng =requiredPoints[i].data.NxtLng;
             grade=requiredPoints[i].data.grade;
             roadId=requiredPoints[i].data.roadId;
-            //console.log("lat:"+lat+" lng:"+lng+" nxtlat:"+nxtlat+" nxtlng:"+nxtlng+" grade:"+grade);
+            console.log("lat:"+lat+" lng:"+lng+" nxtlat:"+nxtlat+" nxtlng:"+nxtlng+" grade:"+grade);*/
+          }
+
+          //Returns the next GPS point
+          function getNextData(point){
+            return point.lat==nxtlat;
+          }
+
+          //Returns start point
+          function getStartpoint(point){
+            return point.data.position==1;
           }
         }
+
 
       });
 
