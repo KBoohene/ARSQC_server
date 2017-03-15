@@ -335,18 +335,23 @@
       function drawLines(pathPoints){
         var path =[];
         var count =0;
+
+        //Loops the points to plot
         while(count<pathPoints.length){
 
           if(pathPoints[count]!=null){
+            //Adds points to temp array
             path.push([pathPoints[count].lat, pathPoints[count].lng]);
           }else{
-            console.log('Answer');
+           //Plot path in the array
             mapObj.drawPolyline({
               path: path,
               strokeColor: '#131540',
               strokeOpacity: 0.6,
               strokeWeight: 6
             });
+
+            //Empty array after plotting
             emptyArray(path);
           }
           count++;
