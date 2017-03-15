@@ -56,19 +56,9 @@ class coordinates extends adb{
 
         $nxtLine =fgets($tempFile);
         $nxtArray=$this->splitLine($nxtLine);
-        /*echo " Longitude: ";
-        echo $textArray[1];
-        echo " Latitude: ";
-        echo $textArray[2];
-        echo " Grade: ";
-        echo $textArray[0];*/
 
 
         if($nxtLine != false){
-          /*echo " nxtLongitude: ";
-          echo $nxtArray[1];
-          echo " nxtLatitude: ";
-          echo $nxtArray[2];*/
           $this->addCoordinate($textArray[0], $textArray[1],$textArray[2],$nxtArray[1],$nxtArray[2],$RouteID);
         }
         else{

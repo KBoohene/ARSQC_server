@@ -32,6 +32,8 @@
     2 takes GPS latitude
     3 takes Next Longitude
     4 takes Next Latitude
+    5 takes the routeId
+    6 takes the position
     */
 
     $GPSdata = array(array());
@@ -158,11 +160,11 @@
           var distance;
           var boundaries=[];
           mapObj.removePolygons();
-          //markers[1].setMap(null);
 
+
+          //Calculates the distance needed to draw the bounding box
           distance = distVincenty(sourcelat,sourceLng,destiLat,destiLng);
           distance= (distance*0.3);
-          //console.log(destiLat);
 
           if((sourcelat>destiLat)&&(sourceLng<destiLng)){
             sourceHorizontal = destVincenty(sourcelat,sourceLng,270,distance);
@@ -228,7 +230,6 @@
                       [NE[0],NE[1]],
                       [SE[0],SE[1]],
                       [SW[0],SW[1]]];
-        //console.log([NW[0],NW[1]],[SE[0],SE[1]]);
 
             polygon = mapObj.drawPolygon({
               paths: path,
@@ -244,10 +245,9 @@
         var requiredPoints = [];
         requiredPoints =set.find({lat:NW[0],lng:NW[1]},
                              {lat:SE[0],lng:SE[1]});
-        //console.log(requiredPoints);
-        //set.dump();
 
-        drawGradeLines(requiredPoints);
+          //Arranges GPS points in the needed order to draw lines
+          arrangePoints(requiredPoints);
 
           var nwlatlng = new google.maps.LatLng(sourceVertical[0],sourceVertical[1]);
           var selatlng = new google.maps.LatLng(destiVertical[0],destiVertical[1]);
@@ -259,37 +259,70 @@
         }
 
         /*
-        * Displays the classified data on a map interface
+        * Arranges GPS points needed to draw lines on
+        * mapping interface
         */
-        function drawGradeLines(requiredPoints){
-          var lat, lng, nxtlat, nxtlng, grade, roadId;
-          var output, startpoint=[], path=[];
+        function arrangePoints(requiredPoints){
+          var arrayLength,  point, roadId;
+          var output, startpoint=[], pathPoints=[];
           var count =1;
 
+          arrayLength=requiredPoints.length;
+
+          //Get first start point
           startpoint=requiredPoints.find(getStartpoint);
-          console.log(startpoint);
-          path.push(startpoint);
+          roadId=startpoint.data.routeId;
+          pathPoints.push(startpoint);
+
+          //Remove Start Point
+          requiredPoints.splice(requiredPoints.indexOf(startpoint),1);
           nxtlat=startpoint.data.NxtLat;
 
-          while (count<requiredPoints.length){
+          //Looping through the entire array
+          while (count<arrayLength){
             output = requiredPoints.find(getNextData);
-            path.push(output);
-            console.log(output);
-            nxtlat=output.data.NxtLat;
+
+            if(output!=undefined){
+              pathPoints.push(output);
+            }
+
+            //Delete entry
+            point=requiredPoints.indexOf(output);
+            requiredPoints.splice(point,1);
+
+            //Checks if array is empty
+            if(requiredPoints.length!=0){
+
+              if((isNaN(output.data.NxtLat))||(output.data.NxtLat==undefined)){
+
+                  //This breaks the routes
+                  pathPoints.push(null);
+
+                  //Locate the new route start point
+                  startpoint=requiredPoints.find(getStartpoint);
+
+                  //Remove the new point from the array
+                  requiredPoints.splice(requiredPoints.indexOf(startpoint),1);
+
+                  //Add point to constructed array
+                  pathPoints.push(startpoint);
+
+
+                  //Alter the nextlatitude
+                  nxtlat=startpoint.data.NxtLat;
+
+              }else{
+              nxtlat=output.data.NxtLat;
+              }
+            }
             count++;
 
-            /*lat = requiredPoints[i].lat;
-            lng = requiredPoints[i].lng;
-            nxtlat =requiredPoints[i].data.NxtLat;
-            nxtlng =requiredPoints[i].data.NxtLng;
-            grade=requiredPoints[i].data.grade;
-            roadId=requiredPoints[i].data.roadId;
-            console.log("lat:"+lat+" lng:"+lng+" nxtlat:"+nxtlat+" nxtlng:"+nxtlng+" grade:"+grade);*/
           }
+          drawLines(pathPoints);
 
           //Returns the next GPS point
           function getNextData(point){
-            return point.lat==nxtlat;
+            return ((point.lat==nxtlat)&&(point.data.routeId));
           }
 
           //Returns start point
@@ -298,12 +331,42 @@
           }
         }
 
+      //Draws lines on the mapping interface
+      function drawLines(pathPoints){
+        var path =[];
+        var count =0;
+        while(count<pathPoints.length){
+
+          if(pathPoints[count]!=null){
+            path.push([pathPoints[count].lat, pathPoints[count].lng]);
+          }else{
+            console.log('Answer');
+            mapObj.drawPolyline({
+              path: path,
+              strokeColor: '#131540',
+              strokeOpacity: 0.6,
+              strokeWeight: 6
+            });
+            emptyArray(path);
+          }
+          count++;
+        }
+
+      }
+
+      //Empties an array
+      function emptyArray(array1){
+        for (var i = array1.length; i > 0; i--) {
+          array1.pop();
+        }
+        return array1;
+      }
 
       });
 
     </script>
 
-    <!--Form to take in user search data-->
+    <!--Takes in user search data-->
     <form id="draw-route" name="draw-route" action="" method="get">
       <label for="to">To:</label>
       <input type="text" id="to" name="to" required="required" placeholder="Another address" size="30" />
