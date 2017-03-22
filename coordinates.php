@@ -49,7 +49,6 @@ class coordinates extends adb{
 						POSITION='$status'";
 		}
 
-		echo $strQuery;
 		return $this->query($strQuery);
   }
 

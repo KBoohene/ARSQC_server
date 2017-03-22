@@ -64,7 +64,7 @@
       //Dumps data into geotree datastructure
       for (var i=0;i<GPSpoints.length;i++){
         GradeData={NxtLng:parseFloat(GPSpoints[i][3]),NxtLat:parseFloat(GPSpoints[i][4]),
-                   grade:GPSpoints[i][0], position:parseInt(GPSpoints[i][6]), routeId:parseInt(GPSpoints[i][5])};
+                   grade:GPSpoints[i][0], position:parseInt(GPSpoints[i][6]), routeId:GPSpoints[i][5]};
         binaryTreeGPS={lat:parseFloat(GPSpoints[i][2]),lng:parseFloat(GPSpoints[i][1]),data: GradeData};
         //console.log(binaryTreeGPS);
         set.insert(binaryTreeGPS);
@@ -278,6 +278,7 @@
           requiredPoints.splice(requiredPoints.indexOf(startpoint),1);
           nxtlat=startpoint.data.NxtLat;
 
+
           //Looping through the entire array
           while (count<arrayLength){
             output = requiredPoints.find(getNextData);
@@ -341,6 +342,7 @@
 
           if(pathPoints[count]!=null){
             //Adds points to temp array
+
             path.push([pathPoints[count].lat, pathPoints[count].lng]);
           }else{
 
@@ -351,7 +353,7 @@
               strokeOpacity: 0.6,
               strokeWeight: 6
             });
-						console.log(path);
+
             //Empty array after plotting
             emptyArray(path);
           }
