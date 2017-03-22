@@ -29,14 +29,27 @@ class coordinates extends adb{
   * @return query result, True or False
   * Inserts data into database
   */
-  function addCoordinate($grade, $longitude,$latitude,$NxtLong,$NxtLat,$RouteID){
-    $strQuery="insert into DataPoints set
+	function addCoordinate($grade, $longitude,$latitude,$RouteID,$status,$NxtLong=false,$NxtLat=false){
+		if($NxtLong==false){
+			$strQuery="INSERT into DataPoints SET
 						GRADE='$grade',
 						LONGITUDE='$longitude',
 						LATITUDE='$latitude',
-                        NXTLONGITUDE='$NxtLong',
-                        NXTLATITUDE='$NxtLat',
-                        ROUTEID='$RouteID'";
+						ROUTEID='$RouteID',
+						POSITION='$status'";
+		}
+		else{
+			$strQuery="INSERT into DataPoints SET
+						GRADE='$grade',
+						LONGITUDE='$longitude',
+						LATITUDE='$latitude',
+						NXTLONGITUDE='$NxtLong',
+						NXTLATITUDE='$NxtLat',
+						ROUTEID='$RouteID',
+						POSITION='$status'";
+		}
+
+		echo $strQuery;
 		return $this->query($strQuery);
   }
 
@@ -48,6 +61,10 @@ class coordinates extends adb{
   */
   function read($dataFile){
     $tempFile = fopen($dataFile, "r");
+		$RouteID=sha1(basename($dataFile));
+		$RouteID = substr($RouteID, 0, 5);
+
+
     if ($tempFile) {
       while(($line = fgets($tempFile)) !== false){
 
@@ -59,15 +76,15 @@ class coordinates extends adb{
 
 
         if($nxtLine != false){
-          $this->addCoordinate($textArray[0], $textArray[1],$textArray[2],$nxtArray[1],$nxtArray[2],$RouteID);
+					$this->addCoordinate($textArray[0], $textArray[1],$textArray[2],$RouteID,intVal($textArray[5]),$nxtArray[1],$nxtArray[2]);
         }
         else{
-          $this->addCoordinate($textArray[0], $textArray[1],$textArray[2],null,null,$RouteID);
+          $this->addCoordinate($textArray[0],$textArray[1],$textArray[2],$RouteID,2);
         }
 
         fseek($tempFile,$currentPoint,SEEK_SET);
-        echo " Switch line: ";
-        echo $currentPoint;
+        //echo " Switch line: ";
+        //echo $currentPoint;
         echo "<br />";
 
       }

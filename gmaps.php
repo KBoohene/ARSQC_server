@@ -337,12 +337,13 @@
         var count =0;
 
         //Loops the points to plot
-        while(count<pathPoints.length){
+        while(count<pathPoints.length+1){
 
           if(pathPoints[count]!=null){
             //Adds points to temp array
             path.push([pathPoints[count].lat, pathPoints[count].lng]);
           }else{
+
            //Plot path in the array
             mapObj.drawPolyline({
               path: path,
@@ -350,11 +351,12 @@
               strokeOpacity: 0.6,
               strokeWeight: 6
             });
-
+						console.log(path);
             //Empty array after plotting
             emptyArray(path);
           }
           count++;
+
         }
 
       }
