@@ -6,6 +6,38 @@
   - Displays road quality data
   -->
   <head>
+
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+
+		<!--Styling for web page-->
+		<!-- Font Awesome -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
+
+		<!-- Bootstrap core CSS -->
+		<link href="res/css/bootstrap.min.css" rel="stylesheet">
+
+		<!-- Material Design Bootstrap -->
+		<link href="res/css/mdb.min.css" rel="stylesheet">
+
+		<!-- Your custom styles (optional) -->
+		<link href="res/css/style.css" rel="stylesheet">
+
+		<!-- JQuery -->
+		<script type="text/javascript" src="res/js/jquery-2.2.3.min.js"></script>
+
+		<!-- Bootstrap tooltips -->
+		<script type="text/javascript" src="res/js/tether.min.js"></script>
+
+		<!-- Bootstrap core JavaScript -->
+		<script type="text/javascript" src="res/js/bootstrap.min.js"></script>
+
+		<!-- MDB core JavaScript -->
+		<script type="text/javascript" src="res/js/mdb.min.js"></script>
+
+  <!--/Styling for web page-->
+
     <!--Scripts needed for geotree datastructure-->
     <script src="geo-tree/z-curve.js" type="text/javascript"></script>
     <script src="geo-tree/red-black.js" type="text/javascript"></script>
@@ -19,9 +51,39 @@
     <script src="calDistance.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
   </head>
+
   <body>
     <!--Google maps display-->
-    <div id="map" style="width:1000px; height:500px;"></div>
+		<div class="row">
+			<div class="col-md-9">
+				<div id="map" style="width:100%;height:600px"></div>
+			</div>
+			<div class="col-md-3">
+				<!--Takes in user search data-->
+				<div class="md-form" id="draw-route" name="draw-route" action="" method="get" style="padding-top:40px;">
+
+					<input type="text" id="to" name="to" required="required" placeholder="Destination address" size="10" />
+
+					<button type="button" class="btn btn-primary" id="submit">Submit</button>
+
+					<div>
+						<a id="pos-link" href="#">Get my position</a>
+					</div>
+
+				</div>
+
+
+				<div id="GPS" style="visibility:hidden">
+					<h5>Your Location</h5>
+					Latitude:<p id="lat">Lat</p>
+					Longitude:<p id="long">Lng</p>
+				</div>
+			</div>
+
+		</div>
+
+
+
 
     <!--This section loads data from the database into the geotree datastructure-->
     <?php
@@ -98,6 +160,8 @@
                 mapObj.setCenter(position.coords.latitude, position.coords.longitude);
                 sourceLng=position.coords.longitude;
                 sourcelat=position.coords.latitude;
+
+								displayGPS();
 
                var Source =mapObj.createMarker({
                    lat: position.coords.latitude,
@@ -371,18 +435,18 @@
         return array1;
       }
 
+				function displayGPS(){
+					document.getElementById("GPS").style.visibility ="visible";
+					document.getElementById("lat").innerHTML =sourcelat;
+					document.getElementById("long").innerHTML =sourceLng;
+
+				}
+
       });
 
     </script>
 
-    <!--Takes in user search data-->
-    <form id="draw-route" name="draw-route" action="" method="get">
-      <label for="to">To:</label>
-      <input type="text" id="to" name="to" required="required" placeholder="Another address" size="30" />
-      <a id="pos-link" href="#">Get my position</a>
-      <br />
-      <button id="submit" type="button">Submit</button>
-    </form>
+
 
 
   </body>
