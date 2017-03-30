@@ -155,6 +155,7 @@
         var destiLng, destiLat;
         var markerCounter;
 				var SourceMarker, destination;
+				var polyline=null;
 
         //Finds the user's geolocation
         $("#pos-link").click(function(event) {
@@ -198,10 +199,14 @@
 
                     destiLat = latlng.lat();
                     destiLng =latlng.lng();
+
+
+
                     locationFind=drawBoundary(latlng.lat(),latlng.lng());
                     //console.log(destiLat);
 
 									if(locationFind==true){
+
 										mapObj.removeMarkers();
 										mapObj.setCenter(latlng.lat(), latlng.lng());
 										destination= mapObj.createMarker({
@@ -215,6 +220,13 @@
 										mapObj.addMarker(SourceMarker);
 										mapObj.addMarker(destination);
 										mapObj.setZoom(12);
+									}
+									else{
+										if(polyline!=null){
+											destination.setMap(null);
+											polyline.setMap(null);
+										}
+
 									}
 
                 }
@@ -312,8 +324,11 @@
         /*This inserts the boundary points based on user input
         into Geotree datastructure*/
         var requiredPoints = [];
-        requiredPoints =set.find({lat:NW[0],lng:NW[1]},
-                             {lat:SE[0],lng:SE[1]});
+				requiredPoints =set.find({lat:NE[0],lng:NE[1]},{lat:SW[0],lng:SW[1]});
+
+				//set.dump();
+
+				//console.log(requiredPoints);
 
 				if(requiredPoints.length!=0){
 
@@ -356,6 +371,7 @@
           var count =1;
 
           arrayLength=requiredPoints.length;
+					console.log(requiredPoints);
 
           //Get first start point
           startpoint=requiredPoints.find(getStartpoint);
@@ -370,10 +386,10 @@
           //Looping through the entire array
           while (count<arrayLength){
             output = requiredPoints.find(getNextData);
+						console.log(output);
 
             if(output!=undefined){
               pathPoints.push(output);
-            }
 
             //Delete entry
             point=requiredPoints.indexOf(output);
@@ -396,17 +412,18 @@
                   //Add point to constructed array
                   pathPoints.push(startpoint);
 
-
                   //Alter the nextlatitude
                   nxtlat=startpoint.data.NxtLat;
 
               }else{
               nxtlat=output.data.NxtLat;
               }
-            }
+						}
+						}
             count++;
 
           }
+
           drawLines(pathPoints);
 
           //Returns the next GPS point
@@ -424,7 +441,7 @@
       function drawLines(pathPoints){
         var path =[];
         var count =0;
-
+				//console.log(pathPoints);
         //Loops the points to plot
         while(count<pathPoints.length+1){
 
@@ -434,9 +451,8 @@
             path.push([pathPoints[count].lat, pathPoints[count].lng]);
 
           }else{
-
            //Plot path in the array
-            mapObj.drawPolyline({
+           polyline= mapObj.drawPolyline({
               path: path,
               strokeColor: '#131540',
               strokeOpacity: 0.6,

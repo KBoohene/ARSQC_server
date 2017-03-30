@@ -117,7 +117,7 @@ class coordinates extends adb{
 
 		$this->checkLast();
 		$check=$this->fetch();
-		print_r($check);
+
 
 		if($check['position']==2){
 			$checkFile = fopen($dataFile,"r");
