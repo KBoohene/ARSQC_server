@@ -1,48 +1,40 @@
 <?php
+$GPSvalues=array();
+$count=0;
+$exists=false;
 
-function splitLine($dataLine){
-  $textArray = explode(",",$dataLine);
-  return $textArray;
-}
-
-$dataFile = "features.txt";
-$tempFile = fopen($dataFile, "r");
-
-if ($tempFile) {
-  while(($line = fgets($tempFile)) !== false){
-
-    $currentPoint=ftell($tempFile);
-    $textArray = splitLine($line);
-
-    $nxtLine =fgets($tempFile);
-    $nxtArray=splitLine($nxtLine);
-    echo " Longitude: ";
-    echo $textArray[1];
-    echo " Latitude: ";
-    echo $textArray[2];
-    echo " Grade: ";
-    echo $textArray[0];
+$lat=0.1;
+$lng=0.2;
 
 
-    if($nxtLine != false){
-      echo " nxtLongitude: ";
-      echo $nxtArray[1];
-      echo " nxtLatitude: ";
-      echo $nxtArray[2];
-    }
+$GPSvalues[]=array("lat" => 0.1, "lng" => 0.2);
+$count++;
 
-    fseek($tempFile,$currentPoint,SEEK_SET);
-    echo " Switch line: ";
-    echo $currentPoint;
-    echo "<br />";
+$GPSvalues[]=array("lat" => 0.3, "lng" => 0.4);
+$count++;
 
-  }
-  fclose($tempFile);
+$GPSvalues[]=array("lat" => 0.5, "lng" => 0.6);
+$count++;
 
-} else {
-  // error opening the file.
+$GPSvalues[]=array("lat" => 0.7, "lng" => 0.8);
+$count++;
+
+for($i=0;$i<$count;$i++){
+	if($GPSvalues[$i]['lat']==$lat){
+
+		if($GPSvalues[$i]['lng']==$lng){
+			$exists=true;
+		}
+
+	}
+	//echo $GPSvalues[$i]['lat'];
 }
 
 
 
-?>
+if($exists==false){
+
+	$GPSvalues[]=array("lat" => $lat, "lng" => $lng);
+}
+
+print_r($GPSvalues);

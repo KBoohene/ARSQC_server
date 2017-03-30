@@ -5,6 +5,9 @@
   - @date:02/2017
   - Displays road quality data
   -->
+  <header>
+  	<title>SurfaceMap</title>
+  </header>
   <head>
 
 		<meta charset="utf-8">
@@ -33,8 +36,7 @@
 		<!-- Bootstrap core JavaScript -->
 		<script type="text/javascript" src="res/js/bootstrap.min.js"></script>
 
-		<!-- MDB core JavaScript -->
-		<script type="text/javascript" src="res/js/mdb.min.js"></script>
+
 
   <!--/Styling for web page-->
 
@@ -53,6 +55,8 @@
   </head>
 
   <body>
+		<!-- MDB core JavaScript -->
+		<script type="text/javascript" src="res/js/mdb.min.js"></script>
     <!--Google maps display-->
 		<div class="row">
 			<div class="col-md-9">
@@ -149,12 +153,12 @@
 
         var sourceLng, sourcelat;
         var destiLng, destiLat;
-        var markers =[];
         var markerCounter;
+				var SourceMarker, destination;
 
         //Finds the user's geolocation
         $("#pos-link").click(function(event) {
-            mapObj.removeMarkers();
+
             GMaps.geolocate({
               success: function(position) {
                 mapObj.setCenter(position.coords.latitude, position.coords.longitude);
@@ -163,15 +167,14 @@
 
 								displayGPS();
 
-               var Source =mapObj.createMarker({
+                SourceMarker =mapObj.createMarker({
                    lat: position.coords.latitude,
                    lng: position.coords.longitude,
                    title: 'GPS Location',
-                   icon: {path: google.maps.SymbolPath.CIRCLE, scale: 5}
+								 	 label:"User"
                     });
 
-                markers.push(Source);
-                mapObj.addMarker(Source);
+                mapObj.addMarker(SourceMarker);
                 mapObj.setZoom(12);
 
               },
@@ -186,25 +189,34 @@
 
         //Submits users search request
         $("#submit").click(function() {
+					var locationFind;
             GMaps.geocode({
               address: $('#to').val(),
               callback: function(results, status) {
                 if (status == 'OK') {
                   var latlng = results[0].geometry.location;
-                   mapObj.setCenter(latlng.lat(), latlng.lng());
+
                     destiLat = latlng.lat();
                     destiLng =latlng.lng();
-                    drawBoundary(latlng.lat(),latlng.lng());
+                    locationFind=drawBoundary(latlng.lat(),latlng.lng());
                     //console.log(destiLat);
-                   var destination= mapObj.createMarker({
-                      lat: latlng.lat(),
-                      lng: latlng.lng(),
-                      title: 'Destination',
-                      icon: {path: google.maps.SymbolPath.CIRCLE, scale: 5}
-                    });
-                  markers.push(destination);
-                  mapObj.addMarker(destination);
-                  mapObj.setZoom(12);
+
+									if(locationFind==true){
+										mapObj.removeMarkers();
+										mapObj.setCenter(latlng.lat(), latlng.lng());
+										destination= mapObj.createMarker({
+											lat: latlng.lat(),
+											lng: latlng.lng(),
+											title: 'Destination',
+											label:'Destination',
+											icon: {path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW, scale: 3}
+
+										});
+										mapObj.addMarker(SourceMarker);
+										mapObj.addMarker(destination);
+										mapObj.setZoom(12);
+									}
+
                 }
               }
             });
@@ -295,14 +307,7 @@
                       [SE[0],SE[1]],
                       [SW[0],SW[1]]];
 
-            polygon = mapObj.drawPolygon({
-              paths: path,
-              strokeColor: '#BBD8E9',
-              strokeOpacity: 1,
-              strokeWeight: 3,
-              fillColor: '#BBD8E9',
-              fillOpacity: 0.6
-            });
+
 
         /*This inserts the boundary points based on user input
         into Geotree datastructure*/
@@ -310,16 +315,35 @@
         requiredPoints =set.find({lat:NW[0],lng:NW[1]},
                              {lat:SE[0],lng:SE[1]});
 
-          //Arranges GPS points in the needed order to draw lines
-          arrangePoints(requiredPoints);
+				if(requiredPoints.length!=0){
 
-          var nwlatlng = new google.maps.LatLng(sourceVertical[0],sourceVertical[1]);
-          var selatlng = new google.maps.LatLng(destiVertical[0],destiVertical[1]);
-          boundaries.push(nwlatlng);
-          boundaries.push(selatlng);
+					//Arranges GPS points in the needed order to draw lines
+					arrangePoints(requiredPoints);
+					polygon = mapObj.drawPolygon({
+						paths: path,
+						strokeColor: '#BBD8E9',
+						strokeOpacity: 1,
+						strokeWeight: 1,
+						fillColor: '#BBD8E9',
+						fillOpacity: 0.6
+					});
 
-          //Fits map to GPS boundaries
-          mapObj.fitLatLngBounds(boundaries);
+					var nwlatlng = new google.maps.LatLng(sourceVertical[0],sourceVertical[1]);
+					var selatlng = new google.maps.LatLng(destiVertical[0],destiVertical[1]);
+					boundaries.push(nwlatlng);
+					boundaries.push(selatlng);
+
+					//Fits map to GPS boundaries
+					mapObj.fitLatLngBounds(boundaries);
+					return true;
+				}
+				else{
+					alert("No data collected yet about your destination");
+					return false;
+				}
+
+
+
         }
 
         /*
@@ -408,6 +432,7 @@
             //Adds points to temp array
 
             path.push([pathPoints[count].lat, pathPoints[count].lng]);
+
           }else{
 
            //Plot path in the array
