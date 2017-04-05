@@ -6,10 +6,13 @@
 */
 
 include_once("adb.php");
+include_once("datapoint.php");
 
 class coordinates extends adb{
-	var $counter=0;
-	var $exists=0;
+	//var $counter=0;
+	//var $exists=0;
+	var $GradeList=array();
+	var $place=-1;
 	var $GPSvalues=array();
 
 
@@ -19,15 +22,8 @@ class coordinates extends adb{
   }
 
 	//Checks if GPS point has already been added
-	function checkPoints($lng,$lat){
-
-		/*echo "GPS coordinates are: ";
-		print_r($this->GPSvalues);
-		echo "<br /> GPS points: ";
-		echo $lat;
-		echo ",";
-		echo $lng;
-		echo "<br />";*/
+	//already to the database
+	/*function checkPoints($lng,$lat){
 
 		for($i=0;$i<$this->counter;$i++){
 
@@ -44,12 +40,6 @@ class coordinates extends adb{
 			}
 		}
 
-
-		/*echo "exists: "+$this->exists;
-		echo "<br />";*/
-
-
-
 		if($this->exists==0){
 			$this->GPSvalues[]=array("lat" => $lat, "lng" => $lng);
 
@@ -59,9 +49,8 @@ class coordinates extends adb{
 		else{
 			return true;
 		}
+	}*/
 
-
-	}
 
   /*
   * @params $dataline- Line in a text file
@@ -108,7 +97,8 @@ class coordinates extends adb{
   * @return nothing
   * Reads the lines of a text file
   */
-  function read($dataFile){
+
+		/*function read($dataFile){
 
 		$firstOccur=0;
 
@@ -119,6 +109,7 @@ class coordinates extends adb{
 		$check=$this->fetch();
 
 
+		//Upates the last stored point in the database
 		if($check['position']==2){
 			$checkFile = fopen($dataFile,"r");
 			$checkLine = fgets($checkFile);
@@ -141,9 +132,12 @@ class coordinates extends adb{
     if ($tempFile) {
       while(($line = fgets($tempFile)) !== false){
 
+				//Gets current GPS points
         $currentPoint=ftell($tempFile);
         $textArray = $this->splitLine($line);
 
+
+				//Bets the following GPS points
         $nxtLine =fgets($tempFile);
         $nxtArray=$this->splitLine($nxtLine);
 
@@ -151,23 +145,31 @@ class coordinates extends adb{
 					//$this->addCoordinate($textArray[0], //$textArray[1],$textArray[2],$RouteID,intVal($textArray[5]),$nxtArray[1],$nxtArray[2]);
 
 					if($nxtArray[1]!=$textArray[1]){
+						//Update the next of the first point in the database
 						if($firstOccur==1){
 							$this->updateNxt($nxtArray[2],$nxtArray[1],$check['pointId']);
 							$firstOccur++;
 						}
 
+						//Checks if the GPS point already exists
 						$Exist=$this->checkPoints($textArray[1],$textArray[2]);
-
+						//Checks grade point
+						$veriGrade=$this->shortenPath($textArray[0]);
 						if($Exist==false){
-							$this->addCoordinate($textArray[0], $textArray[1],$textArray[2],$RouteID,2,$nxtArray[1],$nxtArray[2]);
+							if($veriGrade==true){$this->addCoordinate($textArray[0], $textArray[1],$textArray[2],$RouteID,2,$nxtArray[1],$nxtArray[2]);}
 						}
 					}
 
         }
         else{
+
+					//Checks if the GPS point exists
 					$Exist=$this->checkPoints($textArray[1],$textArray[2]);
+					//Checks grade point
+					$veriGrade=$this->shortenPath($textArray[0]);
 					if($Exist==false){
-						$this->addCoordinate($textArray[0],$textArray[1],$textArray[2],$RouteID,2);
+						if($veriGrade==true){$this->addCoordinate($textArray[0],$textArray[1],$textArray[2],$RouteID,2);}
+
 					}
 						//$this->addCoordinate($textArray[0],$textArray[1],$textArray[2],$RouteID,intVal($textArray[5]));
 
@@ -180,6 +182,109 @@ class coordinates extends adb{
       // error opening the file.
     }
   }
+
+	*/
+
+
+	function readFile($dataFile){
+
+		$RouteID=sha1(basename($dataFile));
+		$RouteID = substr($RouteID, 0, 5);
+
+		$tempFile = fopen($dataFile, "r");
+
+		if ($tempFile) {
+			while(($line = fgets($tempFile)) !== false){
+
+				//Gets current GPS points
+				$currentPoint=ftell($tempFile);
+				$textArray = $this->splitLine($line);
+
+				$nxtLine =fgets($tempFile);
+				$nxtArray=$this->splitLine($nxtLine);
+
+				if($nxtLine != false){
+
+					//Makes sure duplicate points arent added
+					if($nxtArray[1]!=$textArray[1]){
+
+						$startPoint = new datapoint($textArray[1],$textArray[2],$textArray[0]);
+
+						//Check if point has already been stored
+						$verify = $this->pointExists($startPoint);
+
+						if($verify!=true){
+							//Checks grade point
+							$veriGrade=$this->shortenPath($startPoint);}
+						else{$veriGrade=false;}
+
+							if($veriGrade==true){
+								$this->$GPSvalues.push($startPoint);
+								$this->$counter++;
+							}
+
+					}
+
+				}
+				else{
+
+					$point = new datapoint($textArray[1],$textArray[2],$textArray[0]);
+
+					//Check if point has already been stored
+					$verify = $this->pointExists($point);
+
+					if($verify!=true){
+						//Checks grade point
+						$veriGrade=$this->shortenPath($point);}
+					else{$veriGrade=false;}
+
+					if($veriGrade==true){
+						$this->$GPSvalues.push($point);
+						$this->$counter++;
+					}
+				}
+				fseek($tempFile,$currentPoint,SEEK_SET);
+
+			}
+			fclose($tempFile);
+		} else {
+			// error opening the file.
+		}
+
+
+		//Add data to database
+		print_r($this->$GPSvalues);
+		//$this->insertData();
+	}
+
+
+	//Prevents sequential GPS points of the same grade
+	//being added to the database
+	function shortenPath($point){
+
+		if($this->$place==-1){
+			$this->$GradeList.push($point->getGrade());
+			$this->$place++;
+			return true;
+		}
+		else{
+			if($point->getGrade()!=$this->$GradeList[$place]){
+				$this->$GradeList.push($point->getGrade());
+				$this->$place++;
+				return true;
+			}
+			else{
+				return false;
+			}
+
+		}
+	}
+
+
+	//Adds data to database
+	function insertData(){
+
+	}
 
   /*
   * @params nothing

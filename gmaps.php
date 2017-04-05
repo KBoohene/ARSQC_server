@@ -132,7 +132,6 @@
         GradeData={NxtLng:parseFloat(GPSpoints[i][3]),NxtLat:parseFloat(GPSpoints[i][4]),
                    grade:GPSpoints[i][0], position:parseInt(GPSpoints[i][6]), routeId:GPSpoints[i][5]};
         binaryTreeGPS={lat:parseFloat(GPSpoints[i][2]),lng:parseFloat(GPSpoints[i][1]),data: GradeData};
-        //console.log(binaryTreeGPS);
         set.insert(binaryTreeGPS);
       }
 
@@ -200,10 +199,7 @@
                     destiLat = latlng.lat();
                     destiLng =latlng.lng();
 
-
-
                     locationFind=drawBoundary(latlng.lat(),latlng.lng());
-                    //console.log(destiLat);
 
 									if(locationFind==true){
 
@@ -225,6 +221,7 @@
 										if(polyline!=null){
 											destination.setMap(null);
 											polyline.setMap(null);
+											mapObj.setCenter(sourcelat, sourceLng);
 										}
 
 									}
@@ -326,9 +323,6 @@
         var requiredPoints = [];
 				requiredPoints =set.find({lat:NE[0],lng:NE[1]},{lat:SW[0],lng:SW[1]});
 
-				//set.dump();
-
-				//console.log(requiredPoints);
 
 				if(requiredPoints.length!=0){
 
