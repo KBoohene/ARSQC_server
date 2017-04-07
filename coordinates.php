@@ -9,8 +9,7 @@ include_once("adb.php");
 include_once("datapoint.php");
 
 class coordinates extends adb{
-	//var $counter=0;
-	//var $exists=0;
+
 	var $GradeList=array();
 	var $place=-1;
 	var $GPSvalues=array();
@@ -186,13 +185,41 @@ class coordinates extends adb{
 	*/
 
 
+
+	//Reads file and does appropriate checks
 	function readFile($dataFile){
 
 		$RouteID=sha1(basename($dataFile));
 		$RouteID = substr($RouteID, 0, 5);
 
-		$tempFile = fopen($dataFile, "r");
+		$this->checkLast();
+		$check=$this->fetch();
 
+
+		/*if($check['position']==2){
+			$checkFile = fopen($dataFile,"r");
+			$checkLine = fgets($checkFile);
+
+			$fLine = $this->splitLine($checkLine);
+			echo"<br/>";
+
+			print_r($fLine);
+
+			echo"<br/>";
+			$newPoint = new datapoints($fLine[1],$fLine[2],$fline[0]);
+			$Exist=$this->pointExists($newPoint);
+
+			if($Exist==false){
+				$this->updateNxt($fLine[2],$fLine[1],$check['pointId']);
+				array_push($this->GPSvalues,$newPoint);
+			}
+			else{
+			}
+			fclose($checkFile);
+		}*/
+
+
+		$tempFile = fopen($dataFile, "r");
 		if ($tempFile) {
 			while(($line = fgets($tempFile)) !== false){
 
@@ -208,7 +235,7 @@ class coordinates extends adb{
 					//Makes sure duplicate points arent added
 					if($nxtArray[1]!=$textArray[1]){
 
-						$startPoint = new datapoint($textArray[1],$textArray[2],$textArray[0]);
+						$startPoint = new datapoints($textArray[1],$textArray[2],$textArray[0]);
 
 						//Check if point has already been stored
 						$verify = $this->pointExists($startPoint);
@@ -219,8 +246,9 @@ class coordinates extends adb{
 						else{$veriGrade=false;}
 
 							if($veriGrade==true){
-								$this->$GPSvalues.push($startPoint);
-								$this->$counter++;
+								array_push($this->GPSvalues,$startPoint);
+
+								//$this->counter++;
 							}
 
 					}
@@ -228,7 +256,7 @@ class coordinates extends adb{
 				}
 				else{
 
-					$point = new datapoint($textArray[1],$textArray[2],$textArray[0]);
+					$point = new datapoints($textArray[1],$textArray[2],$textArray[0]);
 
 					//Check if point has already been stored
 					$verify = $this->pointExists($point);
@@ -239,8 +267,8 @@ class coordinates extends adb{
 					else{$veriGrade=false;}
 
 					if($veriGrade==true){
-						$this->$GPSvalues.push($point);
-						$this->$counter++;
+						array_push($this->GPSvalues,$point);
+
 					}
 				}
 				fseek($tempFile,$currentPoint,SEEK_SET);
@@ -253,8 +281,8 @@ class coordinates extends adb{
 
 
 		//Add data to database
-		print_r($this->$GPSvalues);
-		//$this->insertData();
+		print_r($this->GPSvalues);
+
 	}
 
 
@@ -262,15 +290,15 @@ class coordinates extends adb{
 	//being added to the database
 	function shortenPath($point){
 
-		if($this->$place==-1){
-			$this->$GradeList.push($point->getGrade());
-			$this->$place++;
+		if($this->place==-1){
+			array_push($this->GradeList,$point->getGrade());
+			$this->place++;
 			return true;
 		}
 		else{
-			if($point->getGrade()!=$this->$GradeList[$place]){
-				$this->$GradeList.push($point->getGrade());
-				$this->$place++;
+			if($point->getGrade()!=$this->GradeList[$this->place]){
+				array_push($this->GradeList,$point->getGrade());
+				$this->place++;
 				return true;
 			}
 			else{
@@ -280,10 +308,43 @@ class coordinates extends adb{
 		}
 	}
 
+	//Check if point has been stored alread
+	function pointExists($datapoint){
+	   $validPoint=false;
+
+
+		for($i=0;$i<sizeof($this->GPSvalues);$i++){
+			if($datapoint->getLng()==$this->GPSvalues[$i]->getLng()){
+				$validPoint=true;
+				break;
+			}
+			else{
+				$validPoint=false;
+			}
+		}
+
+		if(sizeof($this->GPSvalues)==0)
+			$validPoint=false;
+
+		return $validPoint;
+	}
+
 
 	//Adds data to database
-	function insertData(){
+	function insertData($RouteID){
+		for($i=0;$i<sizeof($this->GPSvalues);$i++){
 
+			if($i+1<sizeof($this->GPSvalues)){
+				$this->addCoordinate($this->GPSvalues[$i]->getGrade(), $this->GPSvalues[$i]->getLng(),
+														 $this->GPSvalues[$i]->getLat(),$RouteID,2,$this->GPSvalues[$i+1]->getLng(),
+														 $this->GPSvalues[$i+1]->getLat());
+			}
+			else{
+				$this->addCoordinate($this->GPSvalues[$i]->getGrade(), $this->GPSvalues[$i]->getLng(),
+														 $this->GPSvalues[$i]->getLat(),$RouteID,2);
+			}
+
+		}
 	}
 
   /*

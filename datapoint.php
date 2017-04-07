@@ -1,24 +1,26 @@
 <?php
 class datapoints {
 
-	var $lng, $lat, $grade;
+	var $long;
+	var $lat;
+	var $grade;
 
 	function datapoints($longitude,$latitude,$roadGrade){
-		$lng=$longitude;
-		$lat=$latitude;
-		$grade=$roadGrade;
+		$this->long=$longitude;
+		$this->lat=$latitude;
+		$this->grade=$roadGrade;
 	}
 
 	function getLat(){
-		return $lat;
+		return $this->lat;
 	}
 
 	function getLng(){
-		return $lng;
+		return $this->long;
 	}
 
 	function getGrade(){
-		return $grade;
+		return $this->grade;
 	}
 
 }
