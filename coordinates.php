@@ -237,7 +237,7 @@ class coordinates extends adb{
 
 						$startPoint = new datapoints($textArray[1],$textArray[2],$textArray[0]);
 
-						//Check if point has already been stored
+						//Check if the grade point has already been stored
 						$verify = $this->pointExists($startPoint);
 
 						if($verify!=true){

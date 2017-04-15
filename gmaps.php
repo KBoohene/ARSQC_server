@@ -24,8 +24,6 @@
 		<!-- Material Design Bootstrap -->
 		<link href="res/css/mdb.min.css" rel="stylesheet">
 
-		<!-- Your custom styles (optional) -->
-		<link href="res/css/style.css" rel="stylesheet">
 
 		<!-- JQuery -->
 		<script type="text/javascript" src="res/js/jquery-2.2.3.min.js"></script>
@@ -60,7 +58,7 @@
     <!--Google maps display-->
 		<div class="row">
 			<div class="col-md-9">
-				<div id="map" style="width:100%;height:600px"></div>
+				<div id="map" style="width:100%;height:650px"></div>
 			</div>
 			<div class="col-md-3">
 				<!--Takes in user search data-->
@@ -76,11 +74,33 @@
 
 				</div>
 
+				<div class="legend">
+					<h5>Legend</h5>
+
+					<div id="good" style="width:12px; height:12px; background:#007E33; margin-right:10px;
+					border-radius: 25px; display: inline-block;"></div>Good
+					<br />
+
+					<div id="fair" style="width:12px; height:12px; background:#ff8f00; margin-right:10px;
+					 border-radius: 25px; display: inline-block;"></div>Fair
+					<br />
+
+					<div id="bad" style="width:12px; height:12px; background:#CC0000; margin-right:10px;
+					border-radius: 25px;display: inline-block; "></div>
+						Bad
+					<br />
+					<br />
+				</div>
 
 				<div id="GPS" style="visibility:hidden">
 					<h5>Your Location</h5>
 					Latitude:<p id="lat">Lat</p>
 					Longitude:<p id="long">Lng</p>
+				</div>
+
+
+				<div id="erro_msg" style="visibility:hidden" >
+					<h5 style="color:red ">No data collected yet <br />about your destination</h5>
 				</div>
 			</div>
 
@@ -347,7 +367,7 @@
 					return true;
 				}
 				else{
-					alert("No data collected yet about your destination");
+					document.getElementById("erro_msg").style.visibility ="visible";
 					return false;
 				}
 

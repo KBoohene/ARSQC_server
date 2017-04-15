@@ -1,7 +1,7 @@
 /**
  *@author: Salsita Software
  * August 22, 2014
- *Java Script implementation of a z-curve function
+ *Java Script implementation of a z-order curve function
  *Source: https://github.com/salsita/geo-tree/blob/master/src/z-curve.js
 **/
 // z-curve implementation mapping 2D coordinates into 1D (single index) scalar
