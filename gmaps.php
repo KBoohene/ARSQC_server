@@ -498,13 +498,18 @@
 			function colorLines(path,grade){
 				//Colors: Good - #007E33, Fair - #ff8f00, Bad -#CC0000
 				var colors=[ '#007E33','#ff8f00','#CC0000'];
+				var sColor;
 
 				for (var i = 0; i < path.length-1; i++) {
-					polyline = mapObj.drawPolyline({({
-						path: [DrivePath[i], DrivePath[i+1]],
-						strokeColor: Colors[i],
+					if(grade[i]=='Good'){sColor=colors[0]}
+					else if(grade[i]=='Fair'){sColor=colors[1]}
+					else{sColor=colors[3]}
+
+					polyline = mapObj.drawPolyline({
+						path: [path[i], path[i+1]],
+						strokeColor: sColor,
 						strokeOpacity: 1.0,
-						strokeWeight: 2,
+						strokeWeight: 10,
 						map: map
 					});
 				}
