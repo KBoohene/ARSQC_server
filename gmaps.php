@@ -85,7 +85,7 @@
 					 border-radius: 25px; display: inline-block;"></div>Fair
 					<br />
 
-					<div id="bad" style="width:12px; height:12px; background:#CC0000; margin-right:10px;
+					<div id="bad" style="width:12px; height:12px; background:#212121; margin-right:10px;
 					border-radius: 25px;display: inline-block; "></div>
 						Bad
 					<br />
@@ -240,6 +240,7 @@
 									else{
 										if(polyline!=null){
 											destination.setMap(null);
+											console.log(polyline);
 											polyline.setMap(null);
 											mapObj.setCenter(sourcelat, sourceLng);
 										}
@@ -347,7 +348,7 @@
 				if(requiredPoints.length!=0){
 					document.getElementById("erro_msg").style.visibility ="hidden";
 					//Arranges GPS points in the needed order to draw lines
-					arrangePoints(requiredPoints);
+
 					polygon = mapObj.drawPolygon({
 						paths: path,
 						strokeColor: '#BBD8E9',
@@ -356,7 +357,7 @@
 						fillColor: '#BBD8E9',
 						fillOpacity: 0.6
 					});
-
+					arrangePoints(requiredPoints);
 					var nwlatlng = new google.maps.LatLng(sourceVertical[0],sourceVertical[1]);
 					var selatlng = new google.maps.LatLng(destiVertical[0],destiVertical[1]);
 					boundaries.push(nwlatlng);
@@ -496,14 +497,14 @@
 
 
 			function colorLines(path,grade){
-				//Colors: Good - #007E33, Fair - #ff8f00, Bad -#CC0000
-				var colors=[ '#007E33','#ff8f00','#CC0000'];
+				//Colors: Good - #007E33, Fair - #ff8f00, Bad -#212121
+				var colors=[ '#007E33','#ff8f00','#212121'];
 				var sColor;
 
 				for (var i = 0; i < path.length-1; i++) {
 					if(grade[i]=='Good'){sColor=colors[0]}
 					else if(grade[i]=='Fair'){sColor=colors[1]}
-					else{sColor=colors[3]}
+					else{sColor=colors[2]}
 
 					polyline = mapObj.drawPolyline({
 						path: [path[i], path[i+1]],
