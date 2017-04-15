@@ -345,7 +345,7 @@
 
 
 				if(requiredPoints.length!=0){
-
+					document.getElementById("erro_msg").style.visibility ="hidden";
 					//Arranges GPS points in the needed order to draw lines
 					arrangePoints(requiredPoints);
 					polygon = mapObj.drawPolygon({
@@ -385,10 +385,11 @@
           var count =1;
 
           arrayLength=requiredPoints.length;
-					console.log(requiredPoints);
+					//console.log(requiredPoints);
 
           //Get first start point
           startpoint=requiredPoints.find(getStartpoint);
+
           roadId=startpoint.data.routeId;
           pathPoints.push(startpoint);
 
@@ -454,6 +455,7 @@
       //Draws lines on the mapping interface
       function drawLines(pathPoints){
         var path =[];
+				var grade=[];
         var count =0;
 				//console.log(pathPoints);
         //Loops the points to plot
@@ -463,18 +465,13 @@
             //Adds points to temp array
 
             path.push([pathPoints[count].lat, pathPoints[count].lng]);
-
+						grade.push(pathPoints[count].data.grade);
           }else{
            //Plot path in the array
-           polyline= mapObj.drawPolyline({
-              path: path,
-              strokeColor: '#131540',
-              strokeOpacity: 0.6,
-              strokeWeight: 6
-            });
-
+           colorLines(path,grade);
             //Empty array after plotting
             emptyArray(path);
+						emptyArray(grade);
           }
           count++;
 
@@ -490,12 +487,29 @@
         return array1;
       }
 
-				function displayGPS(){
-					document.getElementById("GPS").style.visibility ="visible";
-					document.getElementById("lat").innerHTML =sourcelat;
-					document.getElementById("long").innerHTML =sourceLng;
+			function displayGPS(){
+				document.getElementById("GPS").style.visibility ="visible";
+				document.getElementById("lat").innerHTML =sourcelat;
+				document.getElementById("long").innerHTML =sourceLng;
 
+			}
+
+
+			function colorLines(path,grade){
+				//Colors: Good - #007E33, Fair - #ff8f00, Bad -#CC0000
+				var colors=[ '#007E33','#ff8f00','#CC0000'];
+
+				for (var i = 0; i < path.length-1; i++) {
+					polyline = mapObj.drawPolyline({({
+						path: [DrivePath[i], DrivePath[i+1]],
+						strokeColor: Colors[i],
+						strokeOpacity: 1.0,
+						strokeWeight: 2,
+						map: map
+					});
 				}
+
+			}
 
       });
 
