@@ -176,6 +176,7 @@
 				var SourceMarker, destination;
 				var polyline=null;
 
+
         //Finds the user's geolocation
         $("#pos-link").click(function(event) {
 
@@ -191,8 +192,19 @@
                    lat: position.coords.latitude,
                    lng: position.coords.longitude,
                    title: 'GPS Location',
-								 	 label:"User"
+									icon:'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
                     });
+
+								var sourceText = '<h5><b>My location</b></h5>'+'<p><b>Lat: '+sourcelat+
+										'</b></p><p>'+'<b>Lng:'+sourceLng+'</b></p>';
+								var sourceWindow = new google.maps.InfoWindow({
+									content: sourceText
+								});
+
+
+								SourceMarker.addListener('click', function() {
+									sourceWindow.open(mapObj, SourceMarker);
+								});
 
                 mapObj.addMarker(SourceMarker);
                 mapObj.setZoom(12);
@@ -206,6 +218,9 @@
               }
           });
         });
+
+
+
 
         //Submits users search request
         $("#submit").click(function() {
@@ -229,12 +244,23 @@
 											lat: latlng.lat(),
 											lng: latlng.lng(),
 											title: 'Destination',
-											label:'Destination',
-											icon: {path: google.maps.SymbolPath.BACKWARD_CLOSED_ARROW, scale: 3}
+											icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
 
 										});
 										mapObj.addMarker(SourceMarker);
 										mapObj.addMarker(destination);
+
+										var destiText = '<h5><b>'+$('#to').val()+'</b></h5>'+'<p><b>Lat: '+destiLat+
+												'</b></p><p>'+'<b>Lng:'+destiLng+'</b></p>';
+										var destiWindow = new google.maps.InfoWindow({
+											content: destiText
+										});
+
+
+										destination.addListener('click', function() {
+											destiWindow.open(mapObj, destination);
+										});
+
 										mapObj.setZoom(12);
 									}
 									else{
