@@ -412,7 +412,6 @@
           var count =1;
 
           arrayLength=requiredPoints.length;
-					//console.log(requiredPoints);
 
           //Get first start point
           startpoint=requiredPoints.find(getStartpoint);
@@ -428,7 +427,7 @@
           //Looping through the entire array
           while (count<arrayLength){
             output = requiredPoints.find(getNextData);
-						console.log(output);
+
 
             if(output!=undefined){
               pathPoints.push(output);
@@ -484,7 +483,7 @@
         var path =[];
 				var grade=[];
         var count =0;
-				//console.log(pathPoints);
+
         //Loops the points to plot
         while(count<pathPoints.length+1){
 
@@ -501,9 +500,7 @@
 						emptyArray(grade);
           }
           count++;
-
         }
-
       }
 
       //Empties an array

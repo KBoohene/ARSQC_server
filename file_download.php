@@ -18,7 +18,7 @@ $files =  glob("coordinates/*.txt");
 foreach($files as $file) {
 	$obj->readFile($file);
 }
-$obj->insertData("route");
+//$obj->insertData("route");
 
 /*//Moves file from temp folder into final directory
 if (move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $uploadfile)) {

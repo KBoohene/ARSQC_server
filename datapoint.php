@@ -4,11 +4,13 @@ class datapoints {
 	var $long;
 	var $lat;
 	var $grade;
+	var $pathPoint;
 
-	function datapoints($longitude,$latitude,$roadGrade){
+	function datapoints($longitude,$latitude,$roadGrade,$path){
 		$this->long=$longitude;
 		$this->lat=$latitude;
 		$this->grade=$roadGrade;
+		$this->pathPoint=$path;
 	}
 
 	function getLat(){
@@ -23,5 +25,8 @@ class datapoints {
 		return $this->grade;
 	}
 
+	function getPath(){
+		return $this->pathPoint;
+	}
 }
 ?>
