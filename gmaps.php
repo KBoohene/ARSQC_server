@@ -26,15 +26,13 @@
 
 
 		<!-- JQuery -->
-		<script type="text/javascript" src="res/js/jquery-2.2.3.min.js"></script>
+		<script type="text/javascript" src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
 
 		<!-- Bootstrap tooltips -->
 		<script type="text/javascript" src="res/js/tether.min.js"></script>
 
 		<!-- Bootstrap core JavaScript -->
 		<script type="text/javascript" src="res/js/bootstrap.min.js"></script>
-
-
 
   <!--/Styling for web page-->
 
@@ -64,13 +62,15 @@
 				<!--Takes in user search data-->
 				<div class="md-form" id="draw-route" name="draw-route" action="" method="get" style="padding-top:40px;">
 
-					<input type="text" id="to" name="to" required="required" placeholder="Destination address" size="10" />
+				<div id="data_entry">
+					<input type="text" id="to" name="to" required="required" placeholder="Destination address" size="10" disabled/>
 
-					<button type="button" class="btn btn-primary" id="submit">Submit</button>
+					<button type="button" class="btn btn-primary" id="submit" disabled>Submit</button>
+				</div>
 
-					<div>
-						<a id="pos-link" href="#">Get my position</a>
-					</div>
+				<div>
+					<a id="pos-link" href="#" >Get my position</a>
+				</div>
 
 				</div>
 
@@ -176,9 +176,9 @@
 				var SourceMarker, destination;
 				var polyline=null;
 
-
         //Finds the user's geolocation
         $("#pos-link").click(function(event) {
+
 
             GMaps.geolocate({
               success: function(position) {
@@ -208,6 +208,8 @@
 
                 mapObj.addMarker(SourceMarker);
                 mapObj.setZoom(12);
+								document.getElementById("to").disabled = false;
+								document.getElementById("submit").disabled = false;
 
               },
               error: function(error) {
