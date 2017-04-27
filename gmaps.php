@@ -173,7 +173,7 @@
         var sourceLng, sourcelat;
         var destiLng, destiLat;
         var markerCounter;
-				var SourceMarker, destination;
+				var SourceMarker, destination, polyPoints=[];
 				var polyline=null;
 
         //Finds the user's geolocation
@@ -182,7 +182,7 @@
 
             GMaps.geolocate({
               success: function(position) {
-                mapObj.setCenter(position.coords.latitude, position.coords.longitude);
+                /*mapObj.setCenter(position.coords.latitude, position.coords.longitude);
                 sourceLng=position.coords.longitude;
                 sourcelat=position.coords.latitude;
 
@@ -193,7 +193,19 @@
                    lng: position.coords.longitude,
                    title: 'GPS Location',
 									icon:'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
-                    });
+                    });*/
+
+								mapObj.setCenter(5.569583499999999, -0.15652090000003227);
+								sourceLng=-0.15652090000003227;
+								sourcelat=5.569583499999999;
+
+								displayGPS();
+
+								SourceMarker =mapObj.createMarker({
+									lat: 5.569583499999999,
+									lng: -0.15652090000003227,
+									title: 'GPS Location',
+									icon:'http://maps.google.com/mapfiles/ms/icons/red-dot.png'});
 
 								var sourceText = '<h5><b>My location</b></h5>'+'<p><b>Lat: '+sourcelat+
 										'</b></p><p>'+'<b>Lng:'+sourceLng+'</b></p>';
@@ -266,12 +278,16 @@
 										mapObj.setZoom(12);
 									}
 									else{
-										if(polyline!=null){
-											destination.setMap(null);
-											console.log(polyline);
-											polyline.setMap(null);
-											mapObj.setCenter(sourcelat, sourceLng);
+
+										for(var i=0;i<polyPoints.length;i++){
+												polyPoints[i].setMap(null);
+												polyPoints[i] = null;
 										}
+
+											destination.setMap(null);
+
+											mapObj.setCenter(sourcelat, sourceLng);
+
 
 									}
 
@@ -538,6 +554,8 @@
 						strokeWeight: 10,
 						map: map
 					});
+
+					polyPoints.push(polyline);
 				}
 
 			}
