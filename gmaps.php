@@ -3,7 +3,7 @@
   <!--
   - @author:Kwabena Boohene
   - @date:02/2017
-  - Displays road quality data
+  - Displays road quality data on a Google Maps interface
   -->
   <header>
   	<title>SurfaceMap</title>
@@ -106,10 +106,8 @@
 
 		</div>
 
-
-
-
     <!--This section loads data from the database into the geotree datastructure-->
+
     <?php
     include_once('coordinates.php');
     /*
@@ -170,6 +168,7 @@
 
       $(document).ready(function(){
 
+				//Instantiation of global variables
         var sourceLng, sourcelat;
         var destiLng, destiLat;
         var markerCounter;
@@ -178,11 +177,9 @@
 
         //Finds the user's geolocation
         $("#pos-link").click(function(event) {
-
-
             GMaps.geolocate({
               success: function(position) {
-                /*mapObj.setCenter(position.coords.latitude, position.coords.longitude);
+                mapObj.setCenter(position.coords.latitude, position.coords.longitude);
                 sourceLng=position.coords.longitude;
                 sourcelat=position.coords.latitude;
 
@@ -193,19 +190,8 @@
                    lng: position.coords.longitude,
                    title: 'GPS Location',
 									icon:'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
-                    });*/
+                    });
 
-								mapObj.setCenter(5.569583499999999, -0.15652090000003227);
-								sourceLng=-0.15652090000003227;
-								sourcelat=5.569583499999999;
-
-								displayGPS();
-
-								SourceMarker =mapObj.createMarker({
-									lat: 5.569583499999999,
-									lng: -0.15652090000003227,
-									title: 'GPS Location',
-									icon:'http://maps.google.com/mapfiles/ms/icons/red-dot.png'});
 
 								var sourceText = '<h5><b>My location</b></h5>'+'<p><b>Lat: '+sourcelat+
 										'</b></p><p>'+'<b>Lng:'+sourceLng+'</b></p>';
@@ -233,10 +219,7 @@
           });
         });
 
-
-
-
-        //Submits users search request
+        //Submits user's search request
         $("#submit").click(function() {
 					var locationFind;
             GMaps.geocode({
@@ -244,7 +227,7 @@
               callback: function(results, status) {
                 if (status == 'OK') {
                   var latlng = results[0].geometry.location;
-
+									removePline();
                     destiLat = latlng.lat();
                     destiLng =latlng.lng();
 
@@ -253,6 +236,7 @@
 									if(locationFind==true){
 
 										mapObj.removeMarkers();
+
 										mapObj.setCenter(latlng.lat(), latlng.lng());
 										destination= mapObj.createMarker({
 											lat: latlng.lat(),
@@ -278,17 +262,9 @@
 										mapObj.setZoom(12);
 									}
 									else{
-
-										for(var i=0;i<polyPoints.length;i++){
-												polyPoints[i].setMap(null);
-												polyPoints[i] = null;
-										}
-
+										  removePline();
 											destination.setMap(null);
-
 											mapObj.setCenter(sourcelat, sourceLng);
-
-
 									}
 
                 }
@@ -297,10 +273,10 @@
 
           });
 
-      /*Draws rectangular boundary around the user's
-      * GPS location and the destination's GPS
-      */
-      function drawBoundary(destiLat,destiLng){
+        /*Draws rectangular boundary around the user's
+         * GPS location and the destination's GPS
+         */
+        function drawBoundary(destiLat,destiLng){
           var sourceVertical, sourceHorizontal=[];
           var destiVertical, destiHorizontal=[];
           var NW = new Array(2);
@@ -420,10 +396,10 @@
 
         }
 
-        /*
-        * Arranges GPS points needed to draw lines on
-        * mapping interface
-        */
+			  /*
+			   * Arranges GPS points needed to draw lines on
+			   * mapping interface
+			   */
         function arrangePoints(requiredPoints){
           var arrayLength,  point, roadId;
           var output, startpoint=[], pathPoints=[];
@@ -496,8 +472,8 @@
           }
         }
 
-      //Draws lines on the mapping interface
-      function drawLines(pathPoints){
+        //Draws lines on the mapping interface
+        function drawLines(pathPoints){
         var path =[];
 				var grade=[];
         var count =0;
@@ -521,23 +497,24 @@
         }
       }
 
-      //Empties an array
-      function emptyArray(array1){
+        //Empties an array
+        function emptyArray(array1){
         for (var i = array1.length; i > 0; i--) {
           array1.pop();
         }
         return array1;
       }
 
-			function displayGPS(){
+			  //Displays
+			  function displayGPS(){
 				document.getElementById("GPS").style.visibility ="visible";
 				document.getElementById("lat").innerHTML =sourcelat;
 				document.getElementById("long").innerHTML =sourceLng;
 
 			}
 
-
-			function colorLines(path,grade){
+			  //Adds color to the lines being drawn
+			  function colorLines(path,grade){
 				//Colors: Good - #007E33, Fair - #ff8f00, Bad -#212121
 				var colors=[ '#007E33','#ff8f00','#212121'];
 				var sColor;
@@ -559,6 +536,14 @@
 				}
 
 			}
+
+				//Removes polylines from map interface
+				function removePline(){
+					for(var i=0;i<polyPoints.length;i++){
+						polyPoints[i].setMap(null);
+						polyPoints[i] = null;
+					}
+				}
 
       });
 

@@ -70,39 +70,10 @@ class coordinates extends adb{
   * Reads the lines of a text file
   */
 
-
-	//Reads file and does appropriate checks
 	function readFile($dataFile){
 
 		$RouteID=sha1(basename($dataFile));
 		$RouteID = substr($RouteID, 0, 5);
-
-		$this->checkLast();
-		$check=$this->fetch();
-
-
-		/*if($check['position']==2){
-			$checkFile = fopen($dataFile,"r");
-			$checkLine = fgets($checkFile);
-
-			$fLine = $this->splitLine($checkLine);
-			echo"<br/>";
-
-			print_r($fLine);
-
-			echo"<br/>";
-			$newPoint = new datapoints($fLine[1],$fLine[2],$fline[0]);
-			$Exist=$this->pointExists($newPoint);
-
-			if($Exist==false){
-				$this->updateNxt($fLine[2],$fLine[1],$check['pointId']);
-				array_push($this->GPSvalues,$newPoint);
-			}
-			else{
-			}
-			fclose($checkFile);
-		}*/
-
 
 		$tempFile = fopen($dataFile, "r");
 		if ($tempFile) {
@@ -175,8 +146,12 @@ class coordinates extends adb{
 	}
 
 
-	//Prevents sequential GPS points of the same grade
-	//being added to the database
+	/*
+  * @params data point
+  * @return boolean value
+	* Prevents sequential GPS points of the same grade
+	* being added to the database
+	*/
 	function shortenPath($point){
 
 		if($this->place==-1){
@@ -197,7 +172,11 @@ class coordinates extends adb{
 		}
 	}
 
-	//Check if point has been stored already
+	/*
+  * @params data point
+  * @return boolean value
+	* Check if point has been stored already
+	*/
 	function pointExists($datapoint){
 	   $validPoint=false;
 
@@ -217,8 +196,12 @@ class coordinates extends adb{
 		return $validPoint;
 	}
 
+	/*
+  * @params unique id for route
+  * @return nothing
+	* Adds data to database
+	*/
 
-	//Adds data to database
 	function insertData($RouteID){
 		for($i=0;$i<sizeof($this->GPSvalues);$i++){
 
@@ -245,23 +228,6 @@ class coordinates extends adb{
     $strQuery="Select grade, Longitude, Latitude, nxtLongitude, nxtLatitude, routeId, position from datapoints";
     return $this->query($strQuery);
   }
-
-	//Checks the last entry into the database
-	function checkLast(){
-		$strQuery="SELECT pointId, position FROM datapoints ORDER BY position DESC LIMIT 1";
-		return $this->query($strQuery);
-	}
-
-	//Updates null entries in the database
-	function updateNxt($nxtLat,$nxtLng,$pointId){
-		$strQuery="UPDATE datapoints SET nxtLatitude = '$nxtLat', nxtLongitude = '$nxtLng' WHERE pointId='$pointId'";
-		return $this->query($strQuery);
-	}
-
-function emptyArray($points){
-
-}
-
 
 }
 

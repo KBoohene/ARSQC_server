@@ -1,3 +1,9 @@
+/**
+ *@author: Gustava Leone
+ * May 31, 2016
+ *Java Script simplification of the google maps api
+ *Source:https://github.com/hpneo/gmaps/blob/master/gmaps.js
+**/
 "use strict";
 (function(root, factory) {
   if(typeof exports === 'object') {
