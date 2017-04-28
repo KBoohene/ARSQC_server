@@ -422,7 +422,6 @@
           while (count<arrayLength){
             output = requiredPoints.find(getNextData);
 
-
             if(output!=undefined){
               pathPoints.push(output);
 

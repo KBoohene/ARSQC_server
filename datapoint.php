@@ -2,7 +2,7 @@
 /**
 * @author:Kwabena Boohene
 * @date:01/04/2017
-* Object that holds all attributes of datapoints
+* Class that holds all attributes of datapoints
 */
 class datapoints {
 
@@ -53,7 +53,7 @@ class datapoints {
 	/*
   * @params nothing
   * @return the path of the data point
-  * Obtains the path of the data point
+  * Gets the path of the data point
   */
 	function getPath(){
 		return $this->pathPoint;
